@@ -1,0 +1,11 @@
+node_modules
+dist
+*.log
+*.orig
+*.tmp
+*.sol.*
+.awcache
+.pem
+.DS_Store
+Modulo2_Mongodb/airbnbdb/listingsAndReviews.bson
+Modulo2_Mongodb/airbnbdb/listingsAndReviews.metadata.json
