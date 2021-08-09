@@ -1,9 +1,14 @@
 import express from 'express';
+import path from 'path';
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('My awesome books portal');
+app.use('/', express.static(path.resolve(__dirname, '../public')));
+
+// Middleware manejo errores siempre el último.
+app.use(async (error, req, res, next) => {
+  console.error(error);
+  res.sendStatus(500);
 });
 
 app.listen(3000, () => {

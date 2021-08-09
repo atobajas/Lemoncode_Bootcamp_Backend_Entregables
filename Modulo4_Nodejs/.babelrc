@@ -10,5 +10,10 @@
     ],
     "@babel/preset-typescript"
   ],
-  "plugins": ["@babel/plugin-proposal-optional-chaining"]
+  "plugins": ["@babel/plugin-proposal-optional-chaining"],
+  "env": {
+    "development": {
+      "sourceMaps": "inline"
+    }
+  }
 }
