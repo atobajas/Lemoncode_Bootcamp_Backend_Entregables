@@ -1,25 +1,18 @@
 import express from 'express';
-import cors from 'cors';
 import path from 'path';
+import { createRestApi } from './core/servers';
+import { envConstants } from './core/constants';
 
-const app = express();
-app.use(express.json());
-app.use(
-  cors({
-    methods: 'GET',
-    origin: 'http://localhost:8080',
-    credentials: true,
-  })
-);
+const restApiServer = createRestApi();
 
-app.use('/', express.static(path.resolve(__dirname, '../public')));
+restApiServer.use('/', express.static(path.resolve(__dirname, envConstants.STATIC_FILES_PATH)));
 
 // Middleware manejo errores siempre el último.
-app.use(async (error, req, res, next) => {
+restApiServer.use(async (error, req, res, next) => {
   console.error(error);
   res.sendStatus(500);
 });
 
-app.listen(3000, () => {
+restApiServer.listen(envConstants.PORT, () => {
   console.log('Server ready at port 3000');
 });
