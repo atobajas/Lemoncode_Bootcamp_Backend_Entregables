@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "run-p -l type-check:watch start:dev",
-    "start:dev": "nodemon --exec babel-node -r dotenv/config --extensions \".ts\" src/index.ts",
+    "start:dev": "nodemon --exec babel-node --extensions \".ts\" src/index.ts",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch"
   },
