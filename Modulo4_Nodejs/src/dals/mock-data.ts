@@ -1,4 +1,4 @@
-import { House } from './house';
+import { House } from '.';
 
 export interface DB {
   houses: House[];

@@ -1,6 +1,6 @@
 import { HouseRepository } from './house.repository';
-import { db } from '../../mock-data';
-import { House } from '../house.model';
+import { db } from 'dals/mock-data';
+import { House } from '..';
 
 export const mockRepository: HouseRepository = {
   getHouseList: async () => db.houses,

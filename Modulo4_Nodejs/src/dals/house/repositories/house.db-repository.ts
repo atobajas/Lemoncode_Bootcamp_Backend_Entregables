@@ -1,4 +1,4 @@
-import { House } from '../house.model';
+import { House } from '..';
 import { HouseRepository } from './house.repository';
 
 export const dbRepository: HouseRepository = {
