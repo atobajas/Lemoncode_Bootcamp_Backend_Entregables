@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import { createRestApi } from 'core/servers';
 import { envConstants } from 'core/constants';
-import { housesApi } from './houses.api';
+import { housesApi } from 'pods';
 
 const restApiServer = createRestApi();
 
