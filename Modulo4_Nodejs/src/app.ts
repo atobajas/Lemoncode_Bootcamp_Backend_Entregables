@@ -1,5 +1,9 @@
 import express from 'express';
 import path from 'path';
+import {
+  logErrorRequestMiddleware,
+  logRequestMiddleware,
+} from 'common/middleware';
 import { createRestApi } from 'core/servers';
 import { envConstants } from 'core/constants';
 import { housesApi } from 'pods';
@@ -11,18 +15,12 @@ restApiServer.use(
   express.static(path.resolve(__dirname, envConstants.STATIC_FILES_PATH))
 );
 
-restApiServer.use(async (req, res, next) => {
-  console.log(req.url);
-  next();
-});
+restApiServer.use(logRequestMiddleware);
 
 restApiServer.use('/api/houses', housesApi);
 
 // Middleware manejo errores siempre el último.
-restApiServer.use(async (error, req, res, next) => {
-  console.error(error);
-  res.sendStatus(500);
-});
+restApiServer.use(logErrorRequestMiddleware);
 
 restApiServer.listen(envConstants.PORT, () => {
   console.log('Server ready at port 3000');

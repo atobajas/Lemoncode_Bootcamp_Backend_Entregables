@@ -1,20 +1,18 @@
 import * as model from 'dals';
 import * as apiModel from './house.api-model';
 
-export const mapBookFromModelToApi = (book: model.House): apiModel.Book => ({
-  id: book.id,
-  title: book.title,
-  releaseDate: book.releaseDate.toISOString(),
-  author: book.author,
+export const mapHouseFromModelToApi = (house: model.House): apiModel.House => ({
+  _id: house._id,
+  name: house.name,
+  //releaseDate: book.releaseDate.toISOString(),
 });
 
-export const mapBookListFromModelToApi = (
-  bookList: model.House[]
-): apiModel.Book[] => bookList.map(mapBookFromModelToApi);
+export const mapHouseListFromModelToApi = (
+  houseList: model.House[]
+): apiModel.House[] => houseList.map(mapHouseFromModelToApi);
 
-export const mapBookFromApiToModel = (book: apiModel.Book): model.House => ({
-  id: book.id,
-  title: book.title,
-  releaseDate: new Date(book.releaseDate),
-  author: book.author,
+export const mapHouseFromApiToModel = (house: apiModel.House): model.House => ({
+  _id: house._id,
+  name: house.name,
+  //releaseDate: new Date(book.releaseDate),
 });

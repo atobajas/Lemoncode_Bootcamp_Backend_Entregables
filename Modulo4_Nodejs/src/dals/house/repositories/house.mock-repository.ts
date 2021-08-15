@@ -8,7 +8,7 @@ export const mockRepository: HouseRepository = {
   saveHouse: async (house: House) =>
     Boolean(house._id) ? updateHouse(house) : insertHouse(house),
   deleteHouse: async (id: string) => {
-    db.houses.filter((h) => h._id !== id);
+    db.houses = db.houses.filter((h) => h._id !== id);
     return true;
   },
 };

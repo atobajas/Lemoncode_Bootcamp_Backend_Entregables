@@ -1,5 +1,11 @@
 import { Router } from 'express';
 import { houseRepository } from 'dals';
+import {
+  mapHouseFromApiToModel,
+  mapHouseFromModelToApi,
+  mapHouseListFromModelToApi,
+} from './house.mappers';
+import { paginateHouseList } from './house.helpers';
 
 export const housesApi = Router();
 
@@ -8,14 +14,14 @@ housesApi
     try {
       const page = Number(req.query.page);
       const pageSize = Number(req.query.pageSize);
-      let bookList = await houseRepository.getHouseList();
+      const modelHouseList = await houseRepository.getHouseList();
+      const paginatedHouseList = paginateHouseList(
+        modelHouseList,
+        page,
+        pageSize
+      );
 
-      if (page && pageSize) {
-        const startIndex = (page - 1) * pageSize;
-        const endIndex = Math.min(startIndex + pageSize, bookList.length);
-        bookList = bookList.slice(startIndex, endIndex);
-      }
-      res.send(bookList);
+      res.send(mapHouseListFromModelToApi(paginatedHouseList));
     } catch (error) {
       next(error);
     }
@@ -23,9 +29,8 @@ housesApi
   .get('/:id', async (req, res, next) => {
     try {
       const { id } = req.params;
-      //const houseId = Number(id);
-      const book = await houseRepository.getHouse(id);
-      res.send(book);
+      const modelHouse = await houseRepository.getHouse(id);
+      res.send(mapHouseFromModelToApi(modelHouse));
     } catch (error) {
       next(error);
     }
@@ -33,18 +38,19 @@ housesApi
   .post('/', async (req, res, next) => {
     try {
       const house = req.body;
-      const newHouse = await houseRepository.saveHouse(house);
-      res.status(201).send(newHouse);
+      const newHouse = await houseRepository.saveHouse(
+        mapHouseFromApiToModel(house)
+      );
+      res.status(201).send(mapHouseFromModelToApi(newHouse));
     } catch (error) {
       next(error);
     }
   })
-  .put('/:id', async (req, res, next) => {
+  .put('/:_id', async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const houseId = Number(id);
-      const house = req.body;
-      await houseRepository.saveHouse(house);
+      const { _id } = req.params;
+      const modelHouse = mapHouseFromApiToModel({ ...req.body, _id });
+      await houseRepository.saveHouse(modelHouse);
       res.sendStatus(204);
     } catch (error) {
       next(error);
@@ -53,7 +59,6 @@ housesApi
   .delete('/:id', async (req, res, next) => {
     try {
       const { id } = req.params;
-      //const houseId = Number(id);
       await houseRepository.deleteHouse(id);
       res.sendStatus(204);
     } catch (error) {
