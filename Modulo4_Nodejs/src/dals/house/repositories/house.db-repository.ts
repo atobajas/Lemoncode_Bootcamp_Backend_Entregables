@@ -1,5 +1,6 @@
 import { House } from '..';
 import { HouseRepository } from './house.repository';
+import { getDBInstance } from 'core/servers';
 
 export const dbRepository: HouseRepository = {
   getHouseList: async () => {

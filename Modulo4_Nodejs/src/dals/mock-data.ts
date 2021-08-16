@@ -1,4 +1,5 @@
 import { House } from '.';
+import { ObjectId } from 'mongodb';
 
 export interface DB {
   houses: House[];
@@ -7,11 +8,11 @@ export interface DB {
 export const db: DB = {
   houses: [
     {
-      _id: '1',
+      _id: new ObjectId(),
       name: 'Casa Rural Tereñes',
     },
     {
-      _id: '2',
+      _id: new ObjectId(),
       name: 'Casa Rural La Cueste',
     },
   ],

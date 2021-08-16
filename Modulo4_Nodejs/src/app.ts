@@ -4,7 +4,7 @@ import {
   logErrorRequestMiddleware,
   logRequestMiddleware,
 } from 'common/middleware';
-import { createRestApi } from 'core/servers';
+import { connectToDBServer, createRestApi } from 'core/servers';
 import { envConstants } from 'core/constants';
 import { housesApi } from 'pods';
 
@@ -22,6 +22,16 @@ restApiServer.use('/api/houses', housesApi);
 // Middleware manejo errores siempre el último.
 restApiServer.use(logErrorRequestMiddleware);
 
-restApiServer.listen(envConstants.PORT, () => {
-  console.log('Server ready at port 3000');
+restApiServer.listen(envConstants.PORT, async () => {
+  try {
+    if (!envConstants.isApiMock) {
+      await connectToDBServer(envConstants.MONGODB_URI);
+      console.log('Connect to DB');
+    } else {
+      console.log('Running API mock');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  console.log(`Server ready at port ${envConstants.PORT}`);
 });
