@@ -1,4 +1,4 @@
-import { House } from '..';
+import { House } from '../house.model';
 
 export interface HouseRepository {
   getHouseList: () => Promise<House[]>;

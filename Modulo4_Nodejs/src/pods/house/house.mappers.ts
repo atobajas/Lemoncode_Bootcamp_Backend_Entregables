@@ -1,11 +1,14 @@
-import { ObjectId } from 'mongodb';
-import * as model from 'dals';
+import * as model from 'dals/house/house.model';
 import * as apiModel from './house.api-model';
 
 export const mapHouseFromModelToApi = (house: model.House): apiModel.House => ({
-  _id: house._id.toHexString(),
+  _id: house._id,
   name: house.name,
-  //releaseDate: book.releaseDate.toISOString(),
+  listing_url: house.listing_url,
+  description: house.description,
+  beds: house.beds,
+  bathrooms: house.bathrooms,
+  address: house.address,
 });
 
 export const mapHouseListFromModelToApi = (
@@ -13,7 +16,85 @@ export const mapHouseListFromModelToApi = (
 ): apiModel.House[] => houseList.map(mapHouseFromModelToApi);
 
 export const mapHouseFromApiToModel = (house: apiModel.House): model.House => ({
-  _id: new ObjectId(house._id),
+  _id: house._id,
+  listing_url: house.listing_url,
   name: house.name,
-  //releaseDate: new Date(book.releaseDate),
+  summary: '',
+  space: '',
+  description: house.description,
+  neighborhood_overview: '',
+  notes: '',
+  transit: '',
+  access: '',
+  interaction: '',
+  house_rules: '',
+  property_type: '',
+  room_type: '',
+  bed_type: '',
+  minimum_nights: '',
+  maximum_nights: '',
+  cancellation_policy: '',
+  last_scraped: new Date(),
+  calendar_last_scraped: new Date(),
+  first_review: new Date(),
+  last_review: new Date(),
+  accommodates: 0,
+  bedrooms: 0,
+  beds: house.beds,
+  number_of_reviews: 0,
+  bathrooms: house.bathrooms,
+  amenities: new Array(),
+  price: 0,
+  security_deposit: 0,
+  cleaning_fee: 0,
+  extra_people: 0,
+  guests_included: 0,
+  images: [],
+  host: [],
+  address: house.address,
+  availalability: [],
+  review_scores: [],
+  reviews: new Array(),
 });
+
+/* {
+  _id: string;
+  listing_url: string;
+  name: string;
+  summary: string;
+  space: string;
+  description: string;
+  neighborhood_overview: string;
+  notes: string;
+  transit: string;
+  access: string;
+  interaction: string;
+  house_rules: string;
+  property_type: string;
+  room_type: string;
+  bed_type: string;
+  minimum_nights: string;
+  maximum_nights: string;
+  cancellation_policy: string;
+  last_scraped: Date;
+  calendar_last_scraped: Date;
+  first_review: Date;
+  last_review: Date;
+  accommodates: Number;
+  bedrooms: Number;
+  beds: Number;
+  number_of_reviews: Number;
+  bathrooms: Number;
+  amenities: Array<string>;
+  price: Number;
+  security_deposit: Number;
+  cleaning_fee: Number;
+  extra_people: Number;
+  guests_included: Number;
+  images: Object;
+  host: Object;
+  address: Object;
+  availalability: Object;
+  review_scores: Object;
+  reviews: Array<string>; 
+}  */
