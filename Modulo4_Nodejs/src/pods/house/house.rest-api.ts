@@ -30,7 +30,11 @@ housesApi
     try {
       const { id } = req.params;
       const modelHouse = await houseRepository.getHouse(id);
-      res.send(mapHouseFromModelToApi(modelHouse));
+      if (modelHouse) {
+        res.send(mapHouseFromModelToApi(modelHouse));
+      } else {
+        res.sendStatus(404);
+      }
     } catch (error) {
       next(error);
     }
@@ -46,10 +50,10 @@ housesApi
       next(error);
     }
   })
-  .put('/:_id', async (req, res, next) => {
+  .put('/:id', async (req, res, next) => {
     try {
-      const { _id } = req.params;
-      const modelHouse = mapHouseFromApiToModel({ ...req.body, _id });
+      const { id } = req.params;
+      const modelHouse = mapHouseFromApiToModel({ ...req.body, _id: id });
       await houseRepository.saveHouse(modelHouse);
       res.sendStatus(204);
     } catch (error) {
