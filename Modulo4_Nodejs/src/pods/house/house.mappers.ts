@@ -9,6 +9,7 @@ export const mapHouseFromModelToApi = (house: model.House): apiModel.House => ({
   beds: house.beds,
   bathrooms: house.bathrooms,
   address: house.address,
+  last_scraped: house.last_scraped,
 });
 
 export const mapHouseListFromModelToApi = (
@@ -34,7 +35,7 @@ export const mapHouseFromApiToModel = (house: apiModel.House): model.House => ({
   minimum_nights: '',
   maximum_nights: '',
   cancellation_policy: '',
-  last_scraped: new Date(),
+  last_scraped: house.last_scraped,
   calendar_last_scraped: new Date(),
   first_review: new Date(),
   last_review: new Date(),

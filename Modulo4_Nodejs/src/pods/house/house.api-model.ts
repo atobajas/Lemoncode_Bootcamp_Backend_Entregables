@@ -6,4 +6,5 @@ export interface House {
   beds: Number;
   bathrooms: Number;
   address: Object;
+  last_scraped: Date;
 }
