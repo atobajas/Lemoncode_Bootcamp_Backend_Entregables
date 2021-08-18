@@ -1,6 +1,7 @@
 import { HouseRepository } from './house.repository';
 import { db } from 'dals/mock-data';
 import { House } from '../house.model';
+import { Review } from '../review.model';
 
 export const mockRepository: HouseRepository = {
   getHouseList: async () => db.houses,
@@ -10,6 +11,13 @@ export const mockRepository: HouseRepository = {
   deleteHouse: async (id: string) => {
     db.houses = db.houses.filter((h) => h._id !== id);
     return true;
+  },
+  insertHouseReview: async (id: string, review: Review) => {
+    const house = db.houses.find((h) => h._id === id);
+    if (house && review) {
+      house.reviews.push(review);
+      return house;
+    }
   },
 };
 

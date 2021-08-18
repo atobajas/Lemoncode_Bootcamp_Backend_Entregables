@@ -1,5 +1,6 @@
 import { getDBInstance } from 'core/servers';
 import { House } from '../house.model';
+import { Review } from '../review.model';
 import { HouseRepository } from './house.repository';
 
 export const dbRepository: HouseRepository = {
@@ -38,5 +39,16 @@ export const dbRepository: HouseRepository = {
       .collection<House>('listingsAndReviews')
       .deleteOne({ _id: id });
     return deletedCount === 1;
+  },
+  insertHouseReview: async (id: string, review: Review) => {
+    const db = getDBInstance();
+    const house = await db
+      .collection<House>('listingsAndReviews')
+      .findOne({ _id: id });
+    if (house && review) {
+      house.reviews.push(review);
+      dbRepository.saveHouse(house);
+      return house;
+    }
   },
 };

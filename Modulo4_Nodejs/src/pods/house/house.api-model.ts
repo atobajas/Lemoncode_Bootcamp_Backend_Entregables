@@ -7,4 +7,5 @@ export interface House {
   bathrooms: Number;
   address: Object;
   last_scraped: Date;
+  reviews: Array<object>;
 }
