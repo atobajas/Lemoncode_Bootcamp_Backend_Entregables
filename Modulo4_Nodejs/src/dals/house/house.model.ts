@@ -37,5 +37,5 @@ export interface House {
   address: Object;
   availalability: Object;
   review_scores: Object;
-  reviews: Array<string>;
+  reviews: Array<object>;
 }

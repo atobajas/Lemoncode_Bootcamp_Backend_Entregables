@@ -5,6 +5,11 @@ import {
   mapHouseFromModelToApi,
   mapHouseListFromModelToApi,
 } from './house.mappers';
+import {
+  mapReviewFromApiToModel,
+  mapReviewFromModelToApi,
+  mapReviewListFromModelToApi,
+} from 'pods/review/review.mappers';
 import { paginateHouseList } from './house.helpers';
 
 export const housesApi = Router();
@@ -46,6 +51,23 @@ housesApi
         mapHouseFromApiToModel(house)
       );
       res.status(201).send(mapHouseFromModelToApi(newHouse));
+    } catch (error) {
+      next(error);
+    }
+  })
+  .post('/house/review/:idHouse', async (req, res, next) => {
+    try {
+      const { idHouse } = req.params;
+      const modelHouse = await houseRepository.getHouse(idHouse);
+      if (modelHouse) {
+        const review = mapReviewFromApiToModel(req.body);
+        if (review) {
+          modelHouse.reviews.push(review);
+          res.send(mapHouseFromModelToApi(modelHouse));
+        }
+      } else {
+        res.sendStatus(404);
+      }
     } catch (error) {
       next(error);
     }

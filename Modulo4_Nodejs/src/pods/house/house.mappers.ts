@@ -10,6 +10,7 @@ export const mapHouseFromModelToApi = (house: model.House): apiModel.House => ({
   bathrooms: house.bathrooms,
   address: house.address,
   last_scraped: house.last_scraped,
+  reviews: house.reviews,
 });
 
 export const mapHouseListFromModelToApi = (
