@@ -6,7 +6,11 @@ export const mapReviewFromModelToApi = (
 ): apiModel.Review => ({
   name: review.name,
   comment: review.comment,
+<<<<<<< HEAD
   date: review.date.toISOString(),
+=======
+  date: review.date,
+>>>>>>> 86983236bbbcf54e8f489c158b69206a3398046f
 });
 
 export const mapReviewListFromModelToApi = (
@@ -18,5 +22,9 @@ export const mapReviewFromApiToModel = (
 ): model.Review => ({
   name: review.name,
   comment: review.comment,
+<<<<<<< HEAD
   date: new Date(),
+=======
+  date: review.date,
+>>>>>>> 86983236bbbcf54e8f489c158b69206a3398046f
 });
