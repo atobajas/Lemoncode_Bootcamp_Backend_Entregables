@@ -1,23 +1,17 @@
-import { getDBInstance } from 'core/servers';
+import { houseContext } from '../house.context';
 import { House } from '../house.model';
 import { Review } from '../review.model';
 import { HouseRepository } from './house.repository';
 
 export const dbRepository: HouseRepository = {
   getHouseList: async () => {
-    const db = getDBInstance();
-    return await db.collection<House>('listingsAndReviews').find().toArray();
+    return await houseContext.find().lean();
   },
   getHouse: async (id: string) => {
-    const db = getDBInstance();
-    return await db
-      .collection<House>('listingsAndReviews')
-      .findOne({ _id: id });
+    return await houseContext.findOne({ _id: id });
   },
   saveHouse: async (house: House) => {
-    const db = getDBInstance();
-    const { value } = await db
-      .collection<House>('listingsAndReviews')
+    return await houseContext
       .findOneAndUpdate(
         {
           _id: house._id,
@@ -27,24 +21,17 @@ export const dbRepository: HouseRepository = {
         },
         {
           upsert: true,
-          returnDocument: 'after',
+          new: true,
         }
-      );
-    return value;
+      )
+      .lean();
   },
   deleteHouse: async (id: string) => {
-    //throw new Error('Not implemented');
-    const db = getDBInstance();
-    const { deletedCount } = await db
-      .collection<House>('listingsAndReviews')
-      .deleteOne({ _id: id });
+    const { deletedCount } = await houseContext.deleteOne({ _id: id });
     return deletedCount === 1;
   },
   insertHouseReview: async (id: string, review: Review) => {
-    const db = getDBInstance();
-    const house = await db
-      .collection<House>('listingsAndReviews')
-      .findOne({ _id: id });
+    const house = await houseContext.findOne({ _id: id });
     if (house && review) {
       house.reviews.push(review);
       dbRepository.saveHouse(house);
