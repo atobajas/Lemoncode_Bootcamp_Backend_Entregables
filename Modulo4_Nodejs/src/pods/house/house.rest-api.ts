@@ -5,11 +5,7 @@ import {
   mapHouseFromModelToApi,
   mapHouseListFromModelToApi,
 } from './house.mappers';
-import {
-  mapReviewFromApiToModel,
-  mapReviewFromModelToApi,
-  mapReviewListFromModelToApi,
-} from 'pods/review/review.mappers';
+import { mapReviewFromApiToModel } from 'pods/review/review.mappers';
 import { paginateHouseList } from './house.helpers';
 
 export const housesApi = Router();
