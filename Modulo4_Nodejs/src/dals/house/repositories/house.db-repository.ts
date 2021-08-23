@@ -31,7 +31,7 @@ export const dbRepository: HouseRepository = {
     return deletedCount === 1;
   },
   insertHouseReview: async (id: string, review: Review) => {
-    const house = await houseContext.findOne({ _id: id });
+    const house = await houseContext.findOne({ _id: id }).lean();
     if (house && review) {
       house.reviews.push(review);
       dbRepository.saveHouse(house);

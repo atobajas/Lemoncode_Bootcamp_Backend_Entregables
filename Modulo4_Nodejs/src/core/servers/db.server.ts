@@ -1,4 +1,7 @@
-import { connect } from 'mongoose';
+import { connect, set } from 'mongoose';
+import { envConstants } from 'core/constants';
+
+set('debug', !envConstants.isProduction);
 
 export const connectToDBServer = async (connectionURI: string) => {
   await connect(connectionURI, {
