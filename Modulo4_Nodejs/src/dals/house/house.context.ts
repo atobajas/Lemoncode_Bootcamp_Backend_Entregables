@@ -19,6 +19,7 @@ const houseSchema = new Schema({
   last_scraped: { type: Schema.Types.Date },
   amenities: [{ type: Schema.Types.String }],
   price: { type: Schema.Types.Number },
+  address: [{ type: Schema.Types.Mixed }],
   reviews: [{ type: reviewSchema }],
 } as SchemaDefinition<House>);
 
