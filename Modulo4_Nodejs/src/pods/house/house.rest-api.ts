@@ -1,4 +1,6 @@
 import { Router } from 'express';
+//import jwt from 'jsonwebtoken';
+import { authenticationMiddleware } from 'pods/security';
 import { houseRepository } from 'dals';
 import {
   mapHouseFromApiToModel,
@@ -44,17 +46,29 @@ housesApi
       next(error);
     }
   })
-  .post('/', async (req, res, next) => {
-    try {
-      const house = req.body;
-      const newHouse = await houseRepository.saveHouse(
-        mapHouseFromApiToModel(house)
-      );
-      res.status(201).send(mapHouseFromModelToApi(newHouse));
-    } catch (error) {
-      next(error);
+  .post(
+    '/',
+    (req, res, next) => authenticationMiddleware(req, res, next),
+    async (req, res, next) => {
+      try {
+        //const [, token] = req.headers.authorization?.split(' ') || [];
+        //const secret = 'my-secret';
+        //jwt.verify(token, secret, async (error, userSession) => {
+        //if (userSession) {
+        const house = req.body;
+        const newHouse = await houseRepository.saveHouse(
+          mapHouseFromApiToModel(house)
+        );
+        res.status(201).send(mapHouseFromModelToApi(newHouse));
+        //} else {
+        //  res.sendStatus(401);
+        //}
+        //};
+      } catch (error) {
+        next(error);
+      }
     }
-  })
+  )
   .post('/review/:idHouse', async (req, res, next) => {
     try {
       const { idHouse } = req.params;
