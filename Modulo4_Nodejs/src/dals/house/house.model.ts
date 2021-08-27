@@ -37,5 +37,12 @@ export interface House {
   address: Object;
   availalability: Object;
   review_scores: Object;
-  reviews: Array<object>;
+  reviews?: Array<Review>;
+}
+
+export interface Review {
+  _id: string;
+  name: string;
+  comment: string;
+  date: Date;
 }

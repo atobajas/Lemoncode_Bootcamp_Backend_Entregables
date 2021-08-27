@@ -1,6 +1,5 @@
 import mongoose, { Schema, SchemaDefinition } from 'mongoose';
-import { House } from './house.model';
-import { Review } from './review.model';
+import { House, Review } from './house.model';
 
 const reviewSchema = new Schema({
   _id: { type: Schema.Types.String, required: true },

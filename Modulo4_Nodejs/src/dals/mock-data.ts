@@ -49,8 +49,18 @@ export const db: DB = {
       availalability: {},
       review_scores: {},
       reviews: [
-        { name: 'Review 1', comment: 'Commentario 1', date: new Date() },
-        { name: 'Review 2', comment: 'Commentario 2', date: new Date() },
+        {
+          _id: '00000001',
+          name: 'Review 1',
+          comment: 'Commentario 1',
+          date: new Date(),
+        },
+        {
+          _id: '00000002',
+          name: 'Review 2',
+          comment: 'Commentario 2',
+          date: new Date(),
+        },
       ],
     },
     {
@@ -96,8 +106,18 @@ export const db: DB = {
       availalability: {},
       review_scores: {},
       reviews: [
-        { name: 'Review 1', comment: 'Commentario 1', date: new Date() },
-        { name: 'Review 2', comment: 'Commentario 2', date: new Date() },
+        {
+          _id: '00000001',
+          name: 'Review 1',
+          comment: 'Commentario 1',
+          date: new Date(),
+        },
+        {
+          _id: '00000002',
+          name: 'Review 2',
+          comment: 'Commentario 2',
+          date: new Date(),
+        },
       ],
     },
   ],

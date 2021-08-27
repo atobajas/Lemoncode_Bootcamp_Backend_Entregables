@@ -1,6 +1,5 @@
 import { houseContext } from '../house.context';
-import { House } from '../house.model';
-import { Review } from '../review.model';
+import { House, Review } from '../house.model';
 import { HouseRepository } from './house.repository';
 
 export const dbRepository: HouseRepository = {
@@ -8,7 +7,7 @@ export const dbRepository: HouseRepository = {
     return await houseContext.find().lean();
   },
   getHouse: async (id: string) => {
-    return await houseContext.findOne({ _id: id });
+    return await houseContext.findOne({ _id: id }).lean();
   },
   saveHouse: async (house: House) => {
     return await houseContext

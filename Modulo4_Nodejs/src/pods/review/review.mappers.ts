@@ -1,4 +1,4 @@
-import * as model from 'dals/house/review.model';
+import * as model from 'dals/house/house.model';
 import * as apiModel from './review.api-model';
 
 export const mapReviewFromModelToApi = (

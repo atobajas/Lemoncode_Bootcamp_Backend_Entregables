@@ -1,3 +1,5 @@
+import { Review } from 'dals';
+
 export interface House {
   _id: string;
   name: string;
@@ -7,5 +9,5 @@ export interface House {
   bathrooms: Number;
   address: Object;
   last_scraped: Date;
-  reviews: Array<object>;
+  reviews: Array<Review>;
 }

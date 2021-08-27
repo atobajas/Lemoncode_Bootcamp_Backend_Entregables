@@ -12,13 +12,13 @@ const runQueries = async () => {
       {
         $pull: {
           reviews: {
-            _id: { $eq: '00000000' },
+            _id: { $eq: '00000001' },
           },
         },
       },
       {
         new: true,
-        projection: { _id: 1, reviews: 1 },
+        projection: { _id: 1, name: 1, reviews: 1 },
       }
     )
     .lean();
