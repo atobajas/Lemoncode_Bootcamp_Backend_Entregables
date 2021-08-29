@@ -64,7 +64,7 @@ housesApi
     } catch (error) {
       next(error);
     }
-  })
+  )
   .post('/review/:idHouse', async (req, res, next) => {
     try {
       const { idHouse } = req.params;
