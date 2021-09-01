@@ -7,7 +7,7 @@ import {
 import { connectToDBServer, createRestApi } from 'core/servers';
 import { envConstants } from 'core/constants';
 import { housesApi } from 'pods';
-import { securityApi } from 'pods/security';
+import { securityApi, authenticationMiddleware } from 'pods/security';
 
 const restApiServer = createRestApi();
 
@@ -19,7 +19,7 @@ restApiServer.use(
 restApiServer.use(logRequestMiddleware);
 
 restApiServer.use('/api/security', securityApi);
-restApiServer.use('/api/houses', housesApi);
+restApiServer.use('/api/houses', authenticationMiddleware, housesApi);
 
 // Middleware manejo errores siempre el último.
 restApiServer.use(logErrorRequestMiddleware);

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 //import jwt from 'jsonwebtoken';
-import { authenticationMiddleware } from 'pods/security';
+import { authorizationMiddleware } from 'pods/security';
 import { houseRepository } from 'dals';
 import {
   mapHouseFromApiToModel,
@@ -46,7 +46,7 @@ housesApi
       next(error);
     }
   })
-  .post('/', authenticationMiddleware, async (req, res, next) => {
+  .post('/', authorizationMiddleware(['admin']), async (req, res, next) => {
     try {
       //const [, token] = req.headers.authorization?.split(' ') || [];
       //const secret = 'my-secret';

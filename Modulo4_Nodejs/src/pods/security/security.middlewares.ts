@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import { envConstants } from 'core/constants';
-import { UserSession } from 'common-app/models';
+import { Role, UserSession } from 'common-app/models';
 
 const verify = (token: string, secret: string): Promise<UserSession> =>
   new Promise((resolve, reject) => {
@@ -32,3 +32,31 @@ export const authenticationMiddleware: RequestHandler = async (
     res.sendStatus(401);
   }
 };
+
+const isAuthorized = (currentRole: Role, allowedRoles?: Role[]) =>
+  !Boolean(allowedRoles) ||
+  (Boolean(currentRole) && allowedRoles.some((role) => currentRole === role));
+
+// Arrow Function
+export const authorizationMiddleware =
+  (allowedRoles?: Role[]): RequestHandler =>
+  (req, res, next) => {
+    if (isAuthorized(req['userSession']?.role, allowedRoles)) {
+      next();
+    } else {
+      res.sendStatus(403);
+    }
+  };
+
+// Functions
+// export const authorizationMiddleware = function (
+//   allowedRoles?: Role[]
+// ): RequestHandler {
+//   return function (req, res, next) {
+//     if (isAuthorized(req['userSession']?.role, allowedRoles)) {
+//       next();
+//     } else {
+//       res.sendStatus(403);
+//     }
+//   };
+// };
