@@ -45,7 +45,7 @@ export const mapHouseFromApiToModel = (house: apiModel.House): model.House => ({
   beds: house.beds,
   number_of_reviews: 0,
   bathrooms: house.bathrooms,
-  amenities: new Array(),
+  amenities: [],
   price: 0,
   security_deposit: 0,
   cleaning_fee: 0,
@@ -58,3 +58,8 @@ export const mapHouseFromApiToModel = (house: apiModel.House): model.House => ({
   review_scores: [],
   reviews: house.reviews,
 });
+
+export const mapHouseListFromApiToModel = (
+  houseList: apiModel.House[]
+): model.House[] =>
+  Array.isArray(houseList) ? houseList.map(mapHouseFromApiToModel) : [];
