@@ -1,3 +1,4 @@
+import { hashPassword } from 'common/helpers';
 import { getDBInstance } from 'core/servers';
 import { User } from 'dals';
 import { UserRepository } from './user.repository';
@@ -9,9 +10,11 @@ export const dbRepository: UserRepository = {
   },
   getUserByEmailAndPassword: async (email: string, password: string) => {
     const db = getDBInstance();
-    return await db
-      .collection<User>('users')
-      .findOne({ email: email, password: password });
+    const user = await db.collection<User>('users').findOne({ email: email });
+    const hashedPassword = await hashPassword(password, user.salt);
+    return user.password === hashedPassword
+      ? ({ _id: user._id, email: user.email, role: user.role } as User)
+      : null;
   },
   saveUser: async (user: User) => {
     const db = getDBInstance();
