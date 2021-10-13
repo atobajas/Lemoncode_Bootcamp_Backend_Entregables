@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as helpers from 'common/helpers';
+import * as helpers from 'common/helpers/jwt.helpers';
 import { UserSession } from 'common-app/models';
 import { authenticationMiddleware } from './security.middlewares';
 
