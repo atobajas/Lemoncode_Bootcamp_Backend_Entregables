@@ -39,6 +39,7 @@ describe('house.mappers specs', () => {
 
     it(`should return one mapped item in array when it feeds houseList equals with one item`, () => {
       // Arrange
+      const timeStamp = new Date();
       const houseList: apiModel.House[] = [
         {
           _id: '10009990',
@@ -53,12 +54,12 @@ describe('house.mappers specs', () => {
             {
               name: 'test-review-1',
               comment: 'Commentario 1',
-              date: new Date(),
+              date: timeStamp,
             },
             {
               name: 'test-review-2',
               comment: 'Commentario 2',
-              date: new Date(),
+              date: timeStamp,
             },
           ],
         },
@@ -89,9 +90,9 @@ describe('house.mappers specs', () => {
           maximum_nights: '',
           cancellation_policy: '',
           last_scraped: new Date('2021-10-05T12:30:00'),
-          calendar_last_scraped: new Date(),
-          first_review: new Date(),
-          last_review: new Date(),
+          calendar_last_scraped: timeStamp,
+          first_review: timeStamp,
+          last_review: timeStamp,
           accommodates: 0,
           bedrooms: 0,
           beds: 4,
@@ -112,12 +113,12 @@ describe('house.mappers specs', () => {
             {
               name: 'test-review-1',
               comment: 'Commentario 1',
-              date: new Date(),
+              date: timeStamp,
             },
             {
               name: 'test-review-2',
               comment: 'Commentario 2',
-              date: new Date(),
+              date: timeStamp,
             },
           ],
         },
