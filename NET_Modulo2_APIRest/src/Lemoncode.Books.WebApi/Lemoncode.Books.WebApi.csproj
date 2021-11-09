@@ -11,4 +11,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lemoncode.Books.Application\Lemoncode.Books.Application.csproj" />
+  </ItemGroup>
+
 </Project>
