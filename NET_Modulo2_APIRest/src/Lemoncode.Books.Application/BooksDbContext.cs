@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Lemoncode.Books.Application.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lemoncode.Books.Application
 {

@@ -6,6 +6,7 @@ namespace Lemoncode.Books.Domain
     {
         public Guid Id { get; }
         public string Title { get; set; }
+
         public DateTime? PublishedOn { get; set; }
         public bool IsPublished => PublishedOn.HasValue;
         public string Description { get; set; }

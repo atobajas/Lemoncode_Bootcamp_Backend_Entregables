@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lemoncode.Books.Application
+namespace Lemoncode.Books.Application.Entities
 {
     public class BookEntity
     {
