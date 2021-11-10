@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Lemoncode.Books.Application
+namespace Lemoncode.Books.Application.Entities
 {
     public class AuthorEntity
     {
