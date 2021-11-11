@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Lemoncode.Books.Infra.Repository.EfCore\Lemoncode.Books.Infra.Repository.EfCore.csproj" />
     <ProjectReference Include="..\Lemoncode.Books.Application\Lemoncode.Books.Application.csproj" />
   </ItemGroup>
 
