@@ -11,11 +11,11 @@ namespace Lemoncode.Books.Domain
         public Guid Id { get; }
         public string Name { get; set; }
         public string LastName { get; set; }
-        public DateTime Birth { get; set; }
+        public DateTime? Birth { get; set; }
         public string CountryCode { get; set; }
 
         private readonly List<Book> _books = new();
-        public IReadOnlyCollection<Book> ForeignGoals => _books.AsReadOnly();
+        public IReadOnlyCollection<Book> Books => _books.AsReadOnly();
 
         public Author(Guid id)
         {
