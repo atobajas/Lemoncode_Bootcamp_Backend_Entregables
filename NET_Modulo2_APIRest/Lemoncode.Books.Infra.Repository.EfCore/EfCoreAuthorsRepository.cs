@@ -106,7 +106,7 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
                 //Books = (List<BookEntity>)author.Books
             };
             foreach (var localBook in author.Books)
-            {
+        {
                 authorEntity.Books.Add(_efCoreBookRepository.MapBookToBookEntity(localBook));
             };
             return authorEntity;
