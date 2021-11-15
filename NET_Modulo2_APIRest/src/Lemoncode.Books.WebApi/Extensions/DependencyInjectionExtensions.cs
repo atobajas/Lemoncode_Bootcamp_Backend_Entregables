@@ -1,6 +1,10 @@
 ﻿using Lemoncode.Books.Application;
 using Lemoncode.Books.Infra.Repository.EfCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lemoncode.Books.WebApi.Extensions
 {
