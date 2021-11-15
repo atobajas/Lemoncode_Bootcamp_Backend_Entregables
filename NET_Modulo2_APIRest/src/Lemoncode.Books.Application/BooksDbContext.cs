@@ -20,15 +20,15 @@ namespace Lemoncode.Books.Application
         //        //.UseLazyLoadingProxies()
         //        .UseSqlServer(ConnectionString);
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            // Aquí la configuración adicional para relaciones entre entidades (solamente si hiciera falta)
-            //modelBuilder
-            //.Entity<GameEntity>()
-            //.HasOne<TeamEntity>(x => x.HomeTeam)
-            //.WithMany()
-            //.OnDelete(DeleteBehavior.Restrict);
-        }
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+        //    // Aquí la configuración adicional para relaciones entre entidades (solamente si hiciera falta)
+        //    //modelBuilder
+        //    //.Entity<GameEntity>()
+        //    //.HasOne<TeamEntity>(x => x.HomeTeam)
+        //    //.WithMany()
+        //    //.OnDelete(DeleteBehavior.Restrict);
+        //}
     }
 }
