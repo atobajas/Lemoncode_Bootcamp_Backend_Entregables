@@ -22,14 +22,32 @@ namespace Lemoncode.Books.Application.Services
             return _authorsRepository.GetAuthors();
         }
 
-        public Guid CreateAuthor(string name, string lastname, string countryCode, string birth = null)
+        public Guid CreateAuthor(Author author)
         {
             var newId = Guid.NewGuid();
-            DateTime? birthDate = DateTime.Parse(birth).ToUniversalTime();
-            var author = new Author(newId, name, lastname, birthDate, countryCode );
+            author.Birth =
+                DateTime.TryParse(author.Birth.ToString(), out DateTime temp)
+                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+                    : null;
 
-            _authorsRepository.AddAuthor(author);
+            var newAuthor = new Author(newId, author.Name, author.LastName, author.Birth, author.CountryCode);
+
+            _authorsRepository.AddAuthor(newAuthor);
             return newId;
+        }
+
+        public void ModifyAuthor(Guid id, Author author)
+        {
+            author.Birth =
+                DateTime.TryParse(author.Birth.ToString(), out DateTime temp)
+                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+                    : null;
+            _authorsRepository.UpdateAuthor(id, author);
+        }
+
+        public void RemoveAuthor(Guid id)
+        {
+            _authorsRepository.RemoveAuthor(id);
         }
     }
 }

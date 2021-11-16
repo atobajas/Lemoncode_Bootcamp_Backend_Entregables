@@ -1,10 +1,7 @@
-﻿using Lemoncode.Books.Application;
-using Lemoncode.Books.Application.Services;
+﻿using Lemoncode.Books.Application.Services;
+using Lemoncode.Books.Domain;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 
 namespace Lemoncode.Books.WebApi.Controllers
@@ -39,24 +36,27 @@ namespace Lemoncode.Books.WebApi.Controllers
         }
 
         // POST api/<AuthorsController>
-        //[HttpPost]
-        //public IActionResult CreateAuthor([FromBody] string value)
-        //{
-            //TODO terminar esto
-            //var id = _authorsService.CreateAuthor(value);
-            //return CreatedAtAction(nameof(GetGameReport), new { id = id }, newGame);
-        //}
-
-        // PUT api/<AuthorsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost]
+        public IActionResult CreateAuthor([FromBody] Author value)
         {
+            var id = _authorsService.CreateAuthor(value);
+            return CreatedAtAction(nameof(GetAuthor), new { id }, value);
+        }
+
+        // PATCH api/<AuthorsController>/5
+        [HttpPatch("{id}")]
+        public IActionResult Patch(Guid id, [FromBody] Author author)
+        {
+            _authorsService.ModifyAuthor(id, author);
+            return Ok();
         }
 
         // DELETE api/<AuthorsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(Guid id)
         {
+            _authorsService.RemoveAuthor(id);
+            return Ok();
         }
     }
 }

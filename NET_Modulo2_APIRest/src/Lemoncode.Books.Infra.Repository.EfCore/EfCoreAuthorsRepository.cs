@@ -24,6 +24,10 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
                     .Authors
                     .Include(x => x.Books)
                     .SingleOrDefault(x => x.AuthorGuid == id);
+            if (authorEntity is null)
+            {
+                throw new KeyNotFoundException($"Could not find Author with id {id}");
+            }
             return MapAuthorEntityToAuthor(authorEntity);
         }
 
@@ -47,12 +51,16 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
 
         public void RemoveAuthor(Guid id)
         {
-            var authorEntity = _booksDbContext.Authors.Where(x => x.AuthorGuid == id);
+            var authorEntity = _booksDbContext.Authors
+                .Where(x => x.AuthorGuid == id)
+                .FirstOrDefault();
+
             if (authorEntity is null)
             {
                 throw new KeyNotFoundException($"El autor {id} no existe.");
             }
-            _booksDbContext.Remove(authorEntity);
+
+            _booksDbContext.Authors.Remove(authorEntity);
             _booksDbContext.SaveChanges();
         }
 
@@ -108,7 +116,10 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
             };
             foreach (var localBook in author.Books)
         {
-                authorEntity.Books.Add(_efCoreBookRepository.MapBookToBookEntity(localBook));
+                if (!(_efCoreBookRepository.GetBook(localBook.Id) is null))
+                {
+                    authorEntity.Books.Add(_efCoreBookRepository.MapBookToBookEntity(localBook));
+                }
             };
             return authorEntity;
         }
