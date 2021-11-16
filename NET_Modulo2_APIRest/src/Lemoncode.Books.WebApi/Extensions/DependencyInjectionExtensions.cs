@@ -1,4 +1,5 @@
 ﻿using Lemoncode.Books.Application;
+using Lemoncode.Books.Application.Services;
 using Lemoncode.Books.Infra.Repository.EfCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -12,14 +13,14 @@ namespace Lemoncode.Books.WebApi.Extensions
     {
         public static IServiceCollection AddBooksDependencies(this IServiceCollection services)
         {
-            //services.AddSingleton<IDateTimeService, DateTimeService>();
-            //services.AddTransient<GamesCommandService>();
-            //services.AddTransient<GamesQueryService>();
+            services.AddSingleton<IDateTimeService, DateTimeService>();
+            services.AddTransient<AuthorsService>();
             //services.AddSingleton<GameToGameReportMapper>();
 
             // Registro del repositorio a utilizar
             //services.AddSingleton<IAuthorsRepository, InMemoryAuthorsRepository>();
             services.AddTransient<IAuthorsRepository, EfCoreAuthorsRepository>();
+            services.AddTransient<IBooksRepository, EfCoreBooksRepository>();
 
             return services;
         }

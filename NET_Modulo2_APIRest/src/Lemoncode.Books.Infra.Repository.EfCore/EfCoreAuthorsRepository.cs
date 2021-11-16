@@ -78,13 +78,14 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
         public Author MapAuthorEntityToAuthor(AuthorEntity authorEntity)
         {
             var _efCoreBookRepository = new EfCoreBooksRepository(_booksDbContext);
-            var author = new Author(authorEntity.AuthorGuid)
-            {
-                Name = authorEntity.Name,
-                LastName = authorEntity.LastName,
-                Birth = authorEntity.Birth,
-                CountryCode = authorEntity.CountryCode
-            };
+
+            var author = new Author(
+                authorEntity.AuthorGuid,
+                authorEntity.Name,
+                authorEntity.LastName,
+                authorEntity.Birth,
+                authorEntity.CountryCode
+                );
             var authorsEntities = authorEntity.Books;
             foreach (var localBook in authorsEntities)
             {

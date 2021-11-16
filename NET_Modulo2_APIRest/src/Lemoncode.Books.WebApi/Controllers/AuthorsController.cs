@@ -1,4 +1,5 @@
 ﻿using Lemoncode.Books.Application;
+using Lemoncode.Books.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,44 +13,47 @@ namespace Lemoncode.Books.WebApi.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly IAuthorsRepository _authorsRepository;
+        private readonly AuthorsService _authorsService;
 
-        public AuthorsController(IAuthorsRepository authorsRepository)
+        public AuthorsController(AuthorsService authorsService)
         {
-            _authorsRepository = authorsRepository;
+            _authorsService = authorsService;
         }
 
-        // GET: api/<AuthoresController>
+        // GET: api/<AuthorsController>
         [HttpGet]
         public IActionResult GetAuthors()
         {
-            var authors = _authorsRepository.GetAuthors();
+            var authors = _authorsService.GetAuthors();
             return Ok(authors);
         }
 
-        // GET api/<AuthoresController>/5
-        /// <param name="id" example="00000000-0000-0000-0000-000000000000">The game id</param>
+        // GET api/<AuthorsController>/5
+        /// <param name="id" example="00000000-0000-0000-0000-000000000000">The author id</param>
         /// <param name="isDetailed" example="true">Flag that indicates whether the report is detailed or not</param>
         [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
+        public IActionResult GetAuthor(Guid id)
         {
-            var authorRepository = _authorsRepository.GetAuthor(id);
-            return Ok(authorRepository);
+            var author = _authorsService.GetAuthor(id);
+            return Ok(author);
         }
 
-        // POST api/<AuthoresController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        // POST api/<AuthorsController>
+        //[HttpPost]
+        //public IActionResult CreateAuthor([FromBody] string value)
+        //{
+            //TODO terminar esto
+            //var id = _authorsService.CreateAuthor(value);
+            //return CreatedAtAction(nameof(GetGameReport), new { id = id }, newGame);
+        //}
 
-        // PUT api/<AuthoresController>/5
+        // PUT api/<AuthorsController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<AuthoresController>/5
+        // DELETE api/<AuthorsController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

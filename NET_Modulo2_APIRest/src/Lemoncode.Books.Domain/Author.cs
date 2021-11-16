@@ -14,9 +14,13 @@ namespace Lemoncode.Books.Domain
         private readonly List<Book> _books = new();
         public IReadOnlyCollection<Book> Books => _books.AsReadOnly();
 
-        public Author(Guid id)
+        public Author(Guid id, string name, string lastname, DateTime? birth, string countryCode)
         {
             Id = id;
+            Name = name;
+            LastName = lastname;
+            Birth = birth;
+            CountryCode = countryCode;
         }
 
         public void AddBook(Book book)
