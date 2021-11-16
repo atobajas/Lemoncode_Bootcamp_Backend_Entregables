@@ -10,7 +10,7 @@ namespace Lemoncode.Books.WebApi.Extensions
 {
     public static class DependencyInjectionExtensions
     {
-        public static IServiceCollection AddSoccerDependencies(this IServiceCollection services)
+        public static IServiceCollection AddBooksDependencies(this IServiceCollection services)
         {
             //services.AddSingleton<IDateTimeService, DateTimeService>();
             //services.AddTransient<GamesCommandService>();
@@ -18,7 +18,7 @@ namespace Lemoncode.Books.WebApi.Extensions
             //services.AddSingleton<GameToGameReportMapper>();
 
             // Registro del repositorio a utilizar
-            //services.AddSingleton<IGamesRepository, InMemoryGamesRepository>();
+            //services.AddSingleton<IAuthorsRepository, InMemoryAuthorsRepository>();
             services.AddTransient<IAuthorsRepository, EfCoreAuthorsRepository>();
 
             return services;
