@@ -2,10 +2,6 @@
 using Lemoncode.Books.Application.Services;
 using Lemoncode.Books.Infra.Repository.EfCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lemoncode.Books.WebApi.Extensions
 {
@@ -15,7 +11,7 @@ namespace Lemoncode.Books.WebApi.Extensions
         {
             services.AddSingleton<IDateTimeService, DateTimeService>();
             services.AddTransient<AuthorsService>();
-            //services.AddSingleton<GameToGameReportMapper>();
+            services.AddTransient<BooksService>();
 
             // Registro del repositorio a utilizar
             //services.AddSingleton<IAuthorsRepository, InMemoryAuthorsRepository>();
