@@ -29,7 +29,7 @@ namespace Lemoncode.Books.WebApi.Controllers
         /// <param name="id" example="00000000-0000-0000-0000-000000000000">The author id</param>
         /// <param name="isDetailed" example="true">Flag that indicates whether the report is detailed or not</param>
         [HttpGet("{id}")]
-        public IActionResult GetAuthor(Guid id)
+        public IActionResult GetAuthor(Guid id, [FromQuery] bool isDetailed = false)
         {
             var author = _authorsService.GetAuthor(id);
             return Ok(author);
@@ -37,14 +37,14 @@ namespace Lemoncode.Books.WebApi.Controllers
 
         // POST api/<AuthorsController>
         [HttpPost]
-        public IActionResult CreateAuthor([FromBody] Author value)
+        public IActionResult CreateAuthor([FromBody] Author newAuthor)
         {
-            var id = _authorsService.CreateAuthor(value);
-            return CreatedAtAction(nameof(GetAuthor), new { id }, value);
+            var id = _authorsService.CreateAuthor(newAuthor);
+            return CreatedAtAction(nameof(GetAuthor), new { id }, newAuthor);
         }
 
-        // PATCH api/<AuthorsController>/5
-        [HttpPatch("{id}")]
+        // PUT api/<AuthorsController>/5
+        [HttpPut("{id}")]
         public IActionResult Patch(Guid id, [FromBody] Author author)
         {
             _authorsService.ModifyAuthor(id, author);

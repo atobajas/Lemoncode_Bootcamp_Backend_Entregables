@@ -19,14 +19,14 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
 
         public Author GetAuthor(Guid id)
         {
-            var authorEntity = 
+            var authorEntity =
                 _booksDbContext
                     .Authors
                     .Include(x => x.Books)
                     .SingleOrDefault(x => x.AuthorGuid == id);
             if (authorEntity is null)
             {
-                throw new KeyNotFoundException($"Could not find Author with id {id}");
+                throw new KeyNotFoundException($"El autor {id} no existe.");
             }
             return MapAuthorEntityToAuthor(authorEntity);
         }
@@ -64,9 +64,9 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
             _booksDbContext.SaveChanges();
         }
 
-        public void UpdateAuthor(Guid id, Author author)
+        public void UpdateAuthor(Guid id, Author newAuthor)
         {
-            var authorEntity = 
+            var authorEntity =
                 _booksDbContext
                     .Authors
                     .SingleOrDefault(x => x.AuthorGuid == id);
@@ -74,19 +74,17 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
             {
                 throw new KeyNotFoundException($"El autor {id} no existe.");
             }
-            var newAuthor = MapAuthorToAuthorEntity(author);
-            authorEntity.Name = newAuthor.Name;
-            authorEntity.LastName = newAuthor.LastName;
-            authorEntity.Birth = newAuthor.Birth;
-            authorEntity.CountryCode = newAuthor.CountryCode;
-            authorEntity.Books = newAuthor.Books;
+            var newAuthorEntity = MapAuthorToAuthorEntity(newAuthor);
+            authorEntity.Name = newAuthorEntity.Name;
+            authorEntity.LastName = newAuthorEntity.LastName;
+            authorEntity.Birth = newAuthorEntity.Birth;
+            authorEntity.CountryCode = newAuthorEntity.CountryCode;
+            authorEntity.Books = newAuthorEntity.Books;
             _booksDbContext.SaveChanges();
         }
 
-        public Author MapAuthorEntityToAuthor(AuthorEntity authorEntity)
+        public static Author MapAuthorEntityToAuthor(AuthorEntity authorEntity)
         {
-            var _efCoreBookRepository = new EfCoreBooksRepository(_booksDbContext);
-
             var author = new Author(
                 authorEntity.AuthorGuid,
                 authorEntity.Name,
@@ -94,10 +92,9 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
                 authorEntity.Birth,
                 authorEntity.CountryCode
                 );
-            var authorsEntities = authorEntity.Books;
-            foreach (var localBook in authorsEntities)
+            foreach (var localBookEntity in authorEntity.Books)
             {
-                author.AddBook(_efCoreBookRepository.MapBookEntityToBook(localBook));
+                author.AddBook(EfCoreBooksRepository.MapBookEntityToBook(localBookEntity));
             }
             return author;
         }
@@ -112,10 +109,9 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
                 LastName = author.LastName,
                 Birth = author.Birth,
                 CountryCode = author.CountryCode,
-                //Books = (List<BookEntity>)author.Books
             };
             foreach (var localBook in author.Books)
-        {
+            {
                 if (!(_efCoreBookRepository.GetBook(localBook.Id) is null))
                 {
                     authorEntity.Books.Add(_efCoreBookRepository.MapBookToBookEntity(localBook));

@@ -9,7 +9,7 @@ namespace Lemoncode.Books.Domain
         public string Description { get; set; }
         public DateTime? PublishedOn { get; set; }
         public bool IsPublished => PublishedOn.HasValue;
-        public Guid AuthorId { get; private set; }
+        public Guid AuthorId { get; set; }
 
         public Book(Guid id)
         {

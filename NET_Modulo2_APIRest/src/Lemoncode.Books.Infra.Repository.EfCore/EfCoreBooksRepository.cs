@@ -54,30 +54,38 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
         public void RemoveBook(Guid id)
         {
             var bookEntity = _booksDbContext.Books.SingleOrDefault(x => x.BookGuid == id);
-            if (bookEntity != null)
+            if (bookEntity is null)
             {
-                _booksDbContext.Books.Remove(bookEntity);
-                _booksDbContext.SaveChanges();
+                throw new KeyNotFoundException($"No existe el libro {id}");
             }
+
+            _booksDbContext.Books.Remove(bookEntity);
+            _booksDbContext.SaveChanges();
         }
 
-        public void UpdateBook(Guid id, Book book)
+        public void UpdateBook(Guid id, Book newBook)
         {
+            if (!IsValidAuthor(newBook.AuthorId))
+            {
+                throw new KeyNotFoundException($"No existe el autor {newBook.AuthorId}");
+            }
+
             var bookEntity = _booksDbContext.Books.SingleOrDefault(x => x.BookGuid == id);
             if (bookEntity is null)
             {
                 throw new KeyNotFoundException($"No existe el libro {id}");
             }
-            var newBook = MapBookToBookEntity(book);
-            bookEntity.Title = newBook.Title;
-            bookEntity.Description = newBook.Description;
-            bookEntity.PublishedOn = newBook.PublishedOn;
-            bookEntity.AuthorId = newBook.AuthorId;
-            bookEntity.Author = newBook.Author;
+
+            var newBookEntity = MapBookToBookEntity(newBook);
+            bookEntity.Title = newBookEntity.Title;
+            bookEntity.Description = newBookEntity.Description;
+            bookEntity.PublishedOn = newBookEntity.PublishedOn;
+            bookEntity.AuthorId = newBookEntity.AuthorId;
+            bookEntity.Author = newBookEntity.Author;
             _booksDbContext.SaveChanges();
         }
 
-        public Book MapBookEntityToBook(BookEntity bookEntity)
+        public static Book MapBookEntityToBook(BookEntity bookEntity)
         {
             var book = new Book(bookEntity.BookGuid)
             {
@@ -92,7 +100,7 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
         public BookEntity MapBookToBookEntity(Book book)
         {
             var _efCoreAuthorRepository = new EfCoreAuthorsRepository(_booksDbContext);
-            var author = _efCoreAuthorRepository.GetAuthor(book.Id);
+            var author = _efCoreAuthorRepository.GetAuthor(book.AuthorId);
             var authorEntity = _efCoreAuthorRepository.MapAuthorToAuthorEntity(author);
             var bookEntity = new BookEntity()
             {
@@ -102,7 +110,6 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
                 PublishedOn = book.PublishedOn,
                 AuthorId = book.AuthorId,
                 Author = authorEntity
-                //Author = GetAuthorByCode(book.AuthorId),
             };
             return bookEntity;
         }
@@ -111,6 +118,13 @@ namespace Lemoncode.Books.Infra.Repository.EfCore
         {
             var authorEntity = _booksDbContext.Authors.Where(a => a.AuthorGuid == authorId).SingleOrDefault();
             return authorEntity;
+        }
+
+        private bool IsValidAuthor(Guid authorCode)
+        {
+            var _efCoreAuthorRepository = new EfCoreAuthorsRepository(_booksDbContext);
+            var author = _efCoreAuthorRepository.GetAuthor(authorCode);
+            return !(author is null);
         }
     }
 }

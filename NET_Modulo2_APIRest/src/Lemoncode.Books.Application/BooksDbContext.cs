@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lemoncode.Books.Application
 {
-    public class BooksDbContext
-        : DbContext
+    public class BooksDbContext : DbContext
     {
         public BooksDbContext(DbContextOptions<BooksDbContext> options)
             : base(options)
