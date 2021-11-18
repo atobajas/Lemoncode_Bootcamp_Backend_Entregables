@@ -24,7 +24,7 @@ namespace Lemoncode.Books.Application.Services
 
         public Guid CreateBook(Book book)
         {
-            var newId = Guid.NewGuid();                
+            var newId = Guid.NewGuid();
 
             var newBook = new Book(newId)
             {
@@ -32,9 +32,9 @@ namespace Lemoncode.Books.Application.Services
                 Description = book.Description,
                 PublishedOn = DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
                     ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-                    : null,
-                AuthorId = book.AuthorId
+                    : null                
             };
+            newBook.AddAuthor(book.AuthorId);
 
             _booksRepository.AddBook(newBook);
             return newId;
