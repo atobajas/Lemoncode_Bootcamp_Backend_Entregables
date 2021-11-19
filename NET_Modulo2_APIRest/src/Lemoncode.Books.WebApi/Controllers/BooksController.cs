@@ -1,9 +1,8 @@
 ﻿using Lemoncode.Books.Application.Services;
 using Lemoncode.Books.Domain;
+using Lemoncode.Books.WebApi.Binders;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
-using System.Threading.Tasks;
 
 namespace Lemoncode.Books.WebApi.Controllers
 {
@@ -44,7 +43,7 @@ namespace Lemoncode.Books.WebApi.Controllers
         //    var id = _booksService.CreateBook(newBook);
         //    return CreatedAtAction(nameof(GetBook), new { id }, newBook);
         //}
-        public IActionResult Post([ModelBinder(typeof(BookBinder), Name = "Book"), FromBody] Book newBook)
+        public IActionResult Post([ModelBinder(typeof(BookBinder), Name = "authorid")] Book newBook)
         {
             var id = _booksService.CreateBook(newBook);
             return CreatedAtAction(nameof(GetBook), new { id }, newBook);
@@ -64,59 +63,6 @@ namespace Lemoncode.Books.WebApi.Controllers
         {
             _booksService.RemoveBook(id);
             return Ok();
-        }
-    }
-
-    public class BookBinder : IModelBinder
-    {
-        public Task BindModelAsync(ModelBindingContext bindingContext)
-        {
-            if (bindingContext == null)
-            {
-                throw new ArgumentNullException(nameof(bindingContext));
-            }
-
-            var modelName = bindingContext.ModelMetadata.ModelType.Name;
-
-            // Try to fetch the value of the argument by name
-            var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-
-            if (valueProviderResult == ValueProviderResult.None)
-            {
-                return Task.CompletedTask;
-            }
-
-            bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-
-            var value = valueProviderResult.FirstValue;
-
-            // Check if the argument value is null or empty
-            if (string.IsNullOrEmpty(value))
-            {
-                return Task.CompletedTask;
-            }
-
-            if (bindingContext.ModelMetadata.ModelType == typeof(Book))
-            {
-                valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-                var str = valueProviderResult.Values;
-                return Task.CompletedTask;
-            }
-
-            if (!int.TryParse(value, out var id))
-            {
-                // Non-integer arguments result in model state errors
-                bindingContext.ModelState.TryAddModelError(
-                    modelName, "Author Id must be an integer.");
-
-                return Task.CompletedTask;
-            }
-
-            // Model will be null if not found, including for
-            // out of range id values (0, -3, etc.)
-            //var model = _context.Authors.Find(id);
-            //bindingContext.Result = ModelBindingResult.Success(model);
-            return Task.CompletedTask;
         }
     }
 }

@@ -24,20 +24,20 @@ namespace Lemoncode.Books.Application.Services
 
         public Guid CreateBook(Book book)
         {
-            var newId = Guid.NewGuid();
+            //var newId = Guid.NewGuid();
 
-            var newBook = new Book(newId)
-            {
-                Title = book.Title,
-                Description = book.Description,
-                PublishedOn = DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
-                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-                    : null                
-            };
-            newBook.AddAuthor(book.AuthorId);
+            //var newBook = new Book(newId)
+            //{
+            //    Title = book.Title,
+            //    Description = book.Description,
+            //    PublishedOn = DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
+            //        ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+            //        : null                
+            //};
+            //newBook.AddAuthor(book.AuthorId);
 
-            _booksRepository.AddBook(newBook);
-            return newId;
+            _booksRepository.AddBook(book);
+            return book.Id;
         }
 
         public void ModifyBook(Guid id, Book book)
