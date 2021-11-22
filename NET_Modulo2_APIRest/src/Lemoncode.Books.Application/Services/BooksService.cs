@@ -1,4 +1,5 @@
-﻿using Lemoncode.Books.Domain;
+﻿using Lemoncode.Books.Application.Models;
+using Lemoncode.Books.Domain;
 using System;
 using System.Collections.Generic;
 
@@ -22,21 +23,21 @@ namespace Lemoncode.Books.Application.Services
             return _booksRepository.GetBooks();
         }
 
-        public Guid CreateBook(Book book)
+        public Guid CreateBook(BookDto book)
         {
-            //var newId = Guid.NewGuid();
+            var newId = Guid.NewGuid();
 
-            //var newBook = new Book(newId)
-            //{
-            //    Title = book.Title,
-            //    Description = book.Description,
-            //    PublishedOn = DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
-            //        ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-            //        : null                
-            //};
-            //newBook.AddAuthor(book.AuthorId);
+            var newBook = new Book(newId)
+            {
+                Title = book.Title,
+                Description = book.Description,
+                PublishedOn = DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
+                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+                    : null
+            };
+            newBook.AddAuthor(book.AuthorGuid);
 
-            _booksRepository.AddBook(book);
+            _booksRepository.AddBook(newBook);
             return book.Id;
         }
 

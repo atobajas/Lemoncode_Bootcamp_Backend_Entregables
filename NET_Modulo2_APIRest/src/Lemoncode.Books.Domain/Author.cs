@@ -5,7 +5,7 @@ namespace Lemoncode.Books.Domain
 {
     public class Author
     {
-        public Guid Id { get; }
+        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public DateTime? Birth { get; set; }

@@ -6,20 +6,20 @@ namespace Lemoncode.Books.Application.Services
 {
     public class AuthorsService
     {
-        private readonly IAuthorsRepository _authorsRepository;
-        public AuthorsService(IAuthorsRepository authorsRepository)
+        private readonly IBooksRepository _booksepository;
+        public AuthorsService(IBooksRepository booksRepository)
         {
-            _authorsRepository = authorsRepository;
+            _booksepository = booksRepository;
         }
 
         public Author GetAuthor(Guid id)
         {
-            return _authorsRepository.GetAuthor(id);
+            return _booksepository.GetAuthor(id);
         }
 
         public IEnumerable<Author> GetAuthors()
         {
-            return _authorsRepository.GetAuthors();
+            return _booksepository.GetAuthors();
         }
 
         public Guid CreateAuthor(Author author)
@@ -32,7 +32,7 @@ namespace Lemoncode.Books.Application.Services
 
             var newAuthor = new Author(newId, author.Name, author.LastName, author.Birth, author.CountryCode);
 
-            _authorsRepository.AddAuthor(newAuthor);
+            _booksepository.AddAuthor(newAuthor);
             return newId;
         }
 
@@ -42,12 +42,12 @@ namespace Lemoncode.Books.Application.Services
                 DateTime.TryParse(author.Birth.ToString(), out DateTime temp)
                     ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
                     : null;
-            _authorsRepository.UpdateAuthor(id, author);
+            _booksepository.UpdateAuthor(id, author);
         }
 
         public void RemoveAuthor(Guid id)
         {
-            _authorsRepository.RemoveAuthor(id);
+            _booksepository.RemoveAuthor(id);
         }
     }
 }

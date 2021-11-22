@@ -1,4 +1,5 @@
-﻿using Lemoncode.Books.Application.Services;
+﻿using Lemoncode.Books.Application.Models;
+using Lemoncode.Books.Application.Services;
 using Lemoncode.Books.Domain;
 using Lemoncode.Books.WebApi.Binders;
 using Microsoft.AspNetCore.Mvc;
@@ -38,16 +39,17 @@ namespace Lemoncode.Books.WebApi.Controllers
 
         // POST api/<BooksController>
         [HttpPost]
-        //public IActionResult Post([FromBody] Book newBook)
-        //{
-        //    var id = _booksService.CreateBook(newBook);
-        //    return CreatedAtAction(nameof(GetBook), new { id }, newBook);
-        //}
-        public IActionResult Post([ModelBinder(typeof(BookModelBinder), Name = "authorid"), FromBody] Book newBook)
+        public IActionResult Post([FromBody] BookDto newBook)
         {
             var id = _booksService.CreateBook(newBook);
             return CreatedAtAction(nameof(GetBook), new { id }, newBook);
         }
+        // Usando ModelBinder específico
+        //public IActionResult Post([ModelBinder(typeof(BookModelBinder), Name = "authorid"), FromBody] Book newBook)
+        //{
+        //    var id = _booksService.CreateBook(newBook);
+        //    return CreatedAtAction(nameof(GetBook), new { id }, newBook);
+        //}
 
         // PUT api/<BooksController>/5
         [HttpPut("{id}")]
