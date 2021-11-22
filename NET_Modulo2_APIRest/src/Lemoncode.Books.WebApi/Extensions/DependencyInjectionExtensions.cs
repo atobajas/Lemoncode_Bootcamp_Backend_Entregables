@@ -1,6 +1,5 @@
 ﻿using Lemoncode.Books.Application;
 using Lemoncode.Books.Application.Services;
-using Lemoncode.Books.Infra.Repository.EfCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lemoncode.Books.WebApi.Extensions
@@ -15,8 +14,8 @@ namespace Lemoncode.Books.WebApi.Extensions
 
             // Registro del repositorio a utilizar
             //services.AddSingleton<IAuthorsRepository, InMemoryAuthorsRepository>();
-            services.AddTransient<IAuthorsRepository, EfCoreAuthorsRepository>();
-            services.AddTransient<IBooksRepository, EfCoreBooksRepository>();
+            //services.AddTransient<IAuthorsRepository, EfCoreAuthorsRepository>();
+            //services.AddTransient<IBooksRepository, EfCoreBooksRepository>();
 
             return services;
         }

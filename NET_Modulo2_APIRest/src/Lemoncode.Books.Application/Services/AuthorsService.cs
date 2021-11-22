@@ -1,53 +1,116 @@
-﻿using Lemoncode.Books.Domain;
+﻿using Lemoncode.Books.Application.Models;
+using Lemoncode.Books.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lemoncode.Books.Application.Services
 {
     public class AuthorsService
     {
-        private readonly IBooksRepository _booksepository;
-        public AuthorsService(IBooksRepository booksRepository)
+        private readonly BooksDbContext _booksDbContext;
+        public AuthorsService(BooksDbContext booksDBContext)
         {
-            _booksepository = booksRepository;
+            _booksDbContext = booksDBContext;
         }
 
-        public Author GetAuthor(Guid id)
+        public AuthorDto GetAuthor(int id)
         {
-            return _booksepository.GetAuthor(id);
+            var authorEntity =
+                _booksDbContext
+                    .Authors
+                    .Include(x => x.Books)
+                    .SingleOrDefault(x => x.Id == id);
+
+            if (authorEntity is null)
+            {
+                throw new KeyNotFoundException($"El autor {id} no existe.");
+            }
+
+            return MapAuthorEntityToAuthorDto(authorEntity);
         }
 
-        public IEnumerable<Author> GetAuthors()
+        public IEnumerable<AuthorDto> GetAuthors()
         {
-            return _booksepository.GetAuthors();
+            var authorEntities =
+                _booksDbContext
+                .Authors
+                .Include(x => x.Books)
+                .ToList();
+            var authorsDtos = authorEntities.Select(MapAuthorEntityToAuthorDto);
+            return authorsDtos;
         }
 
-        public Guid CreateAuthor(Author author)
+        public void CreateAuthor(AuthorDto newAuthorDto)
         {
-            var newId = Guid.NewGuid();
-            author.Birth =
-                DateTime.TryParse(author.Birth.ToString(), out DateTime temp)
+            var newAuthorEntity = MapAuthorDtoToAuthorEntity(newAuthorDto);
+
+            _booksDbContext.Add(newAuthorEntity);
+            _booksDbContext.SaveChanges();
+
+            newAuthorDto.Id = newAuthorEntity.Id;
+        }
+
+        public void ModifyAuthor(int id, AuthorDto newAuthorDto)
+        {
+
+            var authorEntity = _booksDbContext
+                .Authors
+                .SingleOrDefault(x => x.Id == id);
+            if (authorEntity is null)
+            {
+                throw new KeyNotFoundException($"El autor {id} no existe.");
+            }
+            authorEntity = MapAuthorDtoToAuthorEntity(newAuthorDto);
+            _booksDbContext.SaveChanges();
+        }
+
+        public void RemoveAuthor(int id)
+        {
+            var authorEntity = _booksDbContext.Authors
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+
+            if (authorEntity is null)
+            {
+                throw new KeyNotFoundException($"El autor {id} no existe.");
+            }
+
+            _booksDbContext.Authors.Remove(authorEntity);
+            _booksDbContext.SaveChanges();
+        }
+
+        private AuthorDto MapAuthorEntityToAuthorDto(AuthorEntity authorEntity)
+        {
+            var authorDto = new AuthorDto()
+            {
+                Id = authorEntity.Id,
+                Name = authorEntity.Name,
+                LastName = authorEntity.LastName,
+                Birth = DateTime.TryParse(authorEntity.Birth.ToString(), out DateTime temp)
+                        ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+                        : null,
+                CountryCode = authorEntity.CountryCode,
+                Books = authorEntity.Books.Select(BooksService.MapBookEntityToBookDto)
+            };
+            return authorDto;
+        }
+
+        private AuthorEntity MapAuthorDtoToAuthorEntity(AuthorDto authorDto)
+        {
+            var authorEntity = new AuthorEntity
+            {
+                Id = authorDto.Id,
+                Name = authorDto.Name,
+                LastName = authorDto.LastName,
+                Birth = DateTime.TryParse(authorDto.Birth.ToString(), out DateTime temp)
                     ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-                    : null;
-
-            var newAuthor = new Author(newId, author.Name, author.LastName, author.Birth, author.CountryCode);
-
-            _booksepository.AddAuthor(newAuthor);
-            return newId;
-        }
-
-        public void ModifyAuthor(Guid id, Author author)
-        {
-            author.Birth =
-                DateTime.TryParse(author.Birth.ToString(), out DateTime temp)
-                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-                    : null;
-            _booksepository.UpdateAuthor(id, author);
-        }
-
-        public void RemoveAuthor(Guid id)
-        {
-            _booksepository.RemoveAuthor(id);
+                    : null,
+                CountryCode = authorDto.CountryCode,
+                Books = authorDto.Books.Select(BooksService.MapBookDtoToBookEntity).ToList()
+            };
+            return authorEntity;
         }
     }
 }

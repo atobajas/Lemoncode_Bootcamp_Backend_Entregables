@@ -8,6 +8,6 @@ namespace Lemoncode.Books.Application.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime? PublishedOn { get; set; }
-        public Guid AuthorGuid { get; private set; }
+        public int AuthorId { get; set; }
     }
 }

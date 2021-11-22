@@ -1,5 +1,5 @@
-﻿using Lemoncode.Books.Application.Services;
-using Lemoncode.Books.Domain;
+﻿using Lemoncode.Books.Application.Models;
+using Lemoncode.Books.Application.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json.Linq;
 using System;
@@ -32,19 +32,17 @@ namespace Lemoncode.Books.WebApi.Binders
             var splitData = values.Split(new char[] { '|' });
             if (splitData.Length >= 2)
             {
-                var newId = Guid.NewGuid();
-
-                var newBook = new Book(newId)
+                var newBook = new BookDto()
                 {
                     Title = splitData[0],
                     Description = splitData[1],
                     PublishedOn = DateTime.TryParse(splitData[2].ToString(), out DateTime temp)
                         ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-                        : null
+                        : null,
+                    AuthorId = int.Parse(splitData[3])
                 };
 
                 Guid.TryParse(splitData[3], out var authorId);
-                newBook.AddAuthor(authorId);
                 bindingContext.Result = ModelBindingResult.Success(newBook);
             }
 
@@ -98,17 +96,16 @@ namespace Lemoncode.Books.WebApi.Binders
                 return Task.CompletedTask;
             }
             
-            var bookId = Guid.NewGuid();
-            var book = new Book(bookId)
+            var book = new BookDto()
             {
-                Title = bindingContext.ValueProvider.GetValue(nameof(Book.Title)).FirstValue,
-                Description = bindingContext.ValueProvider.GetValue(nameof(Book.Description)).FirstValue,
-                PublishedOn = DateTime.TryParse(bindingContext.ValueProvider.GetValue(nameof(Book.PublishedOn)).FirstValue, 
+                Title = bindingContext.ValueProvider.GetValue(nameof(BookDto.Title)).FirstValue,
+                Description = bindingContext.ValueProvider.GetValue(nameof(BookDto.Description)).FirstValue,
+                PublishedOn = DateTime.TryParse(bindingContext.ValueProvider.GetValue(nameof(BookDto.PublishedOn)).FirstValue, 
                                                 out DateTime temp)
                                                 ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-                                                : null
+                                                : null,
+                AuthorId = int.Parse(nameof(BookDto.AuthorId))
             };
-            book.AddAuthor(authorId);
             bindingContext.Result = ModelBindingResult.Success(book);
             return Task.CompletedTask;
         }

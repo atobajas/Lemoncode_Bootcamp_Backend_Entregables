@@ -1,7 +1,6 @@
-﻿using Lemoncode.Books.Application.Services;
-using Lemoncode.Books.Domain;
+﻿using Lemoncode.Books.Application.Models;
+using Lemoncode.Books.Application.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 
 namespace Lemoncode.Books.WebApi.Controllers
@@ -26,10 +25,10 @@ namespace Lemoncode.Books.WebApi.Controllers
         }
 
         // GET api/<AuthorsController>/5
-        /// <param name="id" example="00000000-0000-0000-0000-000000000000">The author id</param>
+        /// <param name="id" example="5">The author id</param>
         /// <param name="isDetailed" example="true">Flag that indicates whether the report is detailed or not</param>
-        [HttpGet("{id}")]
-        public IActionResult GetAuthor(Guid id, [FromQuery] bool isDetailed = false)
+        [HttpGet("{id:int}")]
+        public IActionResult GetAuthor(int id, [FromQuery] bool isDetailed = false)
         {
             var author = _authorsService.GetAuthor(id);
             return Ok(author);
@@ -37,23 +36,23 @@ namespace Lemoncode.Books.WebApi.Controllers
 
         // POST api/<AuthorsController>
         [HttpPost]
-        public IActionResult CreateAuthor([FromBody] Author newAuthor)
+        public IActionResult CreateAuthor([FromBody] AuthorDto newAuthor)
         {
-            var id = _authorsService.CreateAuthor(newAuthor);
-            return CreatedAtAction(nameof(GetAuthor), new { id }, newAuthor);
+            _authorsService.CreateAuthor(newAuthor);
+            return CreatedAtAction(nameof(GetAuthor), new { newAuthor.Id }, newAuthor);
         }
 
         // PUT api/<AuthorsController>/5
         [HttpPut("{id}")]
-        public IActionResult Patch(Guid id, [FromBody] Author author)
+        public IActionResult Patch(int id, [FromBody] AuthorDto newAuthor)
         {
-            _authorsService.ModifyAuthor(id, author);
+            _authorsService.ModifyAuthor(id, newAuthor);
             return Ok();
         }
 
         // DELETE api/<AuthorsController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete(int id)
         {
             _authorsService.RemoveAuthor(id);
             return Ok();

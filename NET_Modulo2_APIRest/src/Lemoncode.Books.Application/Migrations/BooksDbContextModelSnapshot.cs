@@ -16,18 +16,15 @@ namespace Lemoncode.Books.Application.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
+                .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Lemoncode.Books.Application.Entities.AuthorEntity", b =>
+            modelBuilder.Entity("Lemoncode.Books.Domain.AuthorEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid>("AuthorGuid")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("Birth")
                         .HasColumnType("datetime2");
@@ -46,21 +43,15 @@ namespace Lemoncode.Books.Application.Migrations
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("Lemoncode.Books.Application.Entities.BookEntity", b =>
+            modelBuilder.Entity("Lemoncode.Books.Domain.BookEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("AuthorId1")
+                    b.Property<int>("AuthorId")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("BookGuid")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -73,21 +64,23 @@ namespace Lemoncode.Books.Application.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId1");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("Lemoncode.Books.Application.Entities.BookEntity", b =>
+            modelBuilder.Entity("Lemoncode.Books.Domain.BookEntity", b =>
                 {
-                    b.HasOne("Lemoncode.Books.Application.Entities.AuthorEntity", "Author")
+                    b.HasOne("Lemoncode.Books.Domain.AuthorEntity", "Author")
                         .WithMany("Books")
-                        .HasForeignKey("AuthorId1");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("Lemoncode.Books.Application.Entities.AuthorEntity", b =>
+            modelBuilder.Entity("Lemoncode.Books.Domain.AuthorEntity", b =>
                 {
                     b.Navigation("Books");
                 });

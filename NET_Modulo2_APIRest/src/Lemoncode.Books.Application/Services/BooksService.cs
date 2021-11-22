@@ -27,8 +27,8 @@ namespace Lemoncode.Books.Application.Services
                 throw new KeyNotFoundException($"No existe el libro {id}");
             }
 
-            //var book = MapBookEntityToBook(bookEntity);
-            return bookEntity;
+            var bookDto = MapBookEntityToBookDto(bookEntity);
+            return bookDto;
         }
 
         public IEnumerable<BookDto> GetBooks()
@@ -37,55 +37,50 @@ namespace Lemoncode.Books.Application.Services
                 _booksDbContext
                 .Books
                 .Include(x => x.Author)
-                .ToList();
-                //.Select(MapBookEntityToBook);
+                .ToList()
+                .Select(MapBookEntityToBookDto);
 
             return bookDtos;
         }
 
-        public void CreateBook(BookDto book)
+        public void CreateBook(BookDto bookDto)
         {
-
-            var newBook = new BookEntity()
+            var newBookEntity = new BookEntity()
             {
-                Title = book.Title,
-                Description = book.Description,
-                PublishedOn = DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
+                Title = bookDto.Title,
+                Description = bookDto.Description,
+                PublishedOn = DateTime.TryParse(bookDto.PublishedOn.ToString(), out DateTime temp)
                     ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-                    : null
+                    : null,
+                AuthorId = bookDto.AuthorId                  
             };
 
-            _booksDbContext.Books.Add(newBook);
+            _booksDbContext.Books.Add(newBookEntity);
             _booksDbContext.SaveChanges();
 
-            book.Id = newBook.Id;
+            bookDto.Id = newBookEntity.Id;
         }
 
-        public void ModifyBook(int id, BookDto book)
+        public void ModifyBook(int id, BookDto newBookDto)
         {
-            book.PublishedOn =
-                DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
-                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-                    : null;
-            if (!IsValidAuthor(newBook.AuthorId))
+            if (!IsValidAuthor(newBookDto.AuthorId))
             {
-                throw new KeyNotFoundException($"No existe el autor {newBook.AuthorId}");
+                throw new KeyNotFoundException($"No existe el autor {newBookDto.AuthorId}");
             }
 
-            var bookEntity = _booksDbContext.Books.SingleOrDefault(x => x.BookGuid == id);
-            if (bookEntity is null)
+            var newBookEntity = _booksDbContext.Books.SingleOrDefault(x => x.Id == id);
+            if (newBookEntity is null)
             {
                 throw new KeyNotFoundException($"No existe el libro {id}");
             }
 
-            var newBookEntity = MapBookToBookEntity(newBook);
-            bookEntity.Title = newBookEntity.Title;
-            bookEntity.Description = newBookEntity.Description;
-            bookEntity.PublishedOn = newBookEntity.PublishedOn;
-            bookEntity.AuthorId = newBookEntity.AuthorId;
-            bookEntity.Author = newBookEntity.Author;
+            newBookEntity.Title = newBookDto.Title;
+            newBookEntity.Description = newBookDto.Description;
+            newBookEntity.PublishedOn = DateTime.TryParse(newBookDto.PublishedOn.ToString(), out DateTime temp)
+                                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+                                    : null;
+            newBookEntity.AuthorId = newBookDto.AuthorId;
             _booksDbContext.SaveChanges();
-
         }
 
         public void RemoveBook(int id)
@@ -100,10 +95,36 @@ namespace Lemoncode.Books.Application.Services
             _booksDbContext.SaveChanges();
         }
 
-        private bool IsValidAuthor(Guid authorCode)
+        private bool IsValidAuthor(int authorCode)
         {
-            var author = GetAuthor(authorCode);
+            var author = _booksDbContext.Authors.SingleOrDefault(x => x.Id == authorCode);
             return !(author is null);
+        }
+
+        internal static BookDto MapBookEntityToBookDto(BookEntity bookEntity)
+        {
+            var bookDto = new BookDto()
+            {
+                Id = bookEntity.Id,
+                Title = bookEntity.Title,
+                Description = bookEntity.Description,
+                PublishedOn = bookEntity.PublishedOn,
+                AuthorId = bookEntity.AuthorId
+            };
+            return bookDto;
+        }
+
+        internal static BookEntity MapBookDtoToBookEntity(BookDto bookDto)
+        {
+            var bookEntity = new BookEntity()
+            {
+                Id = bookDto.Id,
+                Title = bookDto.Title,
+                Description = bookDto.Description,
+                PublishedOn = bookDto.PublishedOn,
+                AuthorId = bookDto.AuthorId,
+            };
+            return bookEntity;
         }
     }
 }

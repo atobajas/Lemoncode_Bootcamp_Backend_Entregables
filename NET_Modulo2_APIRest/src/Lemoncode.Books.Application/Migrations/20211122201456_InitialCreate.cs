@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Lemoncode.Books.Application.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,6 @@ namespace Lemoncode.Books.Application.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AuthorGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Birth = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -30,28 +29,26 @@ namespace Lemoncode.Books.Application.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BookGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublishedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    AuthorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AuthorId1 = table.Column<int>(type: "int", nullable: true)
+                    AuthorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Books_Authors_AuthorId1",
-                        column: x => x.AuthorId1,
+                        name: "FK_Books_Authors_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "Authors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_AuthorId1",
+                name: "IX_Books_AuthorId",
                 table: "Books",
-                column: "AuthorId1");
+                column: "AuthorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
