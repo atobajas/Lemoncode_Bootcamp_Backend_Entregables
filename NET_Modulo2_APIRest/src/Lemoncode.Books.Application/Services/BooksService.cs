@@ -1,58 +1,109 @@
-﻿using Lemoncode.Books.Domain;
+﻿using Lemoncode.Books.Application.Models;
+using Lemoncode.Books.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lemoncode.Books.Application.Services
 {
     public class BooksService
     {
-        private readonly IBooksRepository _booksRepository;
-        public BooksService(IBooksRepository booksRepository)
+        private readonly BooksDbContext _booksDbContext;
+        public BooksService(BooksDbContext booksDBContext)
         {
-            _booksRepository = booksRepository;
+            _booksDbContext = booksDBContext;
         }
 
-        public Book GetBook(Guid id)
+        public BookDto GetBook(int id)
         {
-            return _booksRepository.GetBook(id);
+            var bookEntity =
+                _booksDbContext
+                    .Books
+                    .Include(x => x.Author)
+                    .SingleOrDefault(x => x.Id == id);
+            if (bookEntity is null)
+            {
+                throw new KeyNotFoundException($"No existe el libro {id}");
+            }
+
+            //var book = MapBookEntityToBook(bookEntity);
+            return bookEntity;
         }
 
-        public IEnumerable<Book> GetBooks()
+        public IEnumerable<BookDto> GetBooks()
         {
-            return _booksRepository.GetBooks();
+            var bookDtos =
+                _booksDbContext
+                .Books
+                .Include(x => x.Author)
+                .ToList();
+                //.Select(MapBookEntityToBook);
+
+            return bookDtos;
         }
 
-        public Guid CreateBook(Book book)
+        public void CreateBook(BookDto book)
         {
-            //var newId = Guid.NewGuid();
 
-            //var newBook = new Book(newId)
-            //{
-            //    Title = book.Title,
-            //    Description = book.Description,
-            //    PublishedOn = DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
-            //        ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-            //        : null                
-            //};
-            //newBook.AddAuthor(book.AuthorId);
+            var newBook = new BookEntity()
+            {
+                Title = book.Title,
+                Description = book.Description,
+                PublishedOn = DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
+                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+                    : null
+            };
 
-            _booksRepository.AddBook(book);
-            return book.Id;
+            _booksDbContext.Books.Add(newBook);
+            _booksDbContext.SaveChanges();
+
+            book.Id = newBook.Id;
         }
 
-        public void ModifyBook(Guid id, Book book)
+        public void ModifyBook(int id, BookDto book)
         {
             book.PublishedOn =
                 DateTime.TryParse(book.PublishedOn.ToString(), out DateTime temp)
                     ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
                     : null;
-            _booksRepository.UpdateBook(id, book);
+            if (!IsValidAuthor(newBook.AuthorId))
+            {
+                throw new KeyNotFoundException($"No existe el autor {newBook.AuthorId}");
+            }
+
+            var bookEntity = _booksDbContext.Books.SingleOrDefault(x => x.BookGuid == id);
+            if (bookEntity is null)
+            {
+                throw new KeyNotFoundException($"No existe el libro {id}");
+            }
+
+            var newBookEntity = MapBookToBookEntity(newBook);
+            bookEntity.Title = newBookEntity.Title;
+            bookEntity.Description = newBookEntity.Description;
+            bookEntity.PublishedOn = newBookEntity.PublishedOn;
+            bookEntity.AuthorId = newBookEntity.AuthorId;
+            bookEntity.Author = newBookEntity.Author;
+            _booksDbContext.SaveChanges();
+
         }
 
-        public void RemoveBook(Guid id)
+        public void RemoveBook(int id)
         {
-            _booksRepository.RemoveBook(id);
+            var bookEntity = _booksDbContext.Books.SingleOrDefault(x => x.Id == id);
+            if (bookEntity is null)
+            {
+                throw new KeyNotFoundException($"No existe el libro {id}");
+            }
+
+            _booksDbContext.Books.Remove(bookEntity);
+            _booksDbContext.SaveChanges();
         }
 
+        private bool IsValidAuthor(Guid authorCode)
+        {
+            var author = GetAuthor(authorCode);
+            return !(author is null);
+        }
     }
 }

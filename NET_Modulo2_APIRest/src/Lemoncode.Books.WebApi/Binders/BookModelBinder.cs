@@ -97,15 +97,13 @@ namespace Lemoncode.Books.WebApi.Binders
                     modelName, "Author Id must be an Guid.");
                 return Task.CompletedTask;
             }
-
-            var author = _authorsService.GetAuthor(authorId);
             
             var bookId = Guid.NewGuid();
             var book = new Book(bookId)
             {
-                Title = bindingContext.ValueProvider.GetValue("title").FirstValue,
-                Description = bindingContext.ValueProvider.GetValue("description").FirstValue,
-                PublishedOn = DateTime.TryParse(bindingContext.ValueProvider.GetValue("publishedOn").FirstValue, 
+                Title = bindingContext.ValueProvider.GetValue(nameof(Book.Title)).FirstValue,
+                Description = bindingContext.ValueProvider.GetValue(nameof(Book.Description)).FirstValue,
+                PublishedOn = DateTime.TryParse(bindingContext.ValueProvider.GetValue(nameof(Book.PublishedOn)).FirstValue, 
                                                 out DateTime temp)
                                                 ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
                                                 : null

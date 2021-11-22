@@ -1,4 +1,4 @@
-﻿using Lemoncode.Books.Application.Entities;
+﻿using Lemoncode.Books.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lemoncode.Books.Application
