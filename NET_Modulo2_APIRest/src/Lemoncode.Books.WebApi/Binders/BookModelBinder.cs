@@ -52,11 +52,11 @@ namespace Lemoncode.Books.WebApi.Binders
         }
     }
 
-    public class BookBinder : IModelBinder
+    public class BookModelBinder : IModelBinder
     {
         private readonly AuthorsService _authorsService;
 
-        public BookBinder(AuthorsService authorsService)
+        public BookModelBinder(AuthorsService authorsService)
         {
             _authorsService = authorsService;
         }

@@ -5,7 +5,7 @@ using System;
 
 namespace Lemoncode.Books.WebApi.Binders
 {
-    public class BookBinderProvider : IModelBinderProvider
+    public class BookModelBinderProvider : IModelBinderProvider
     {        public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
             if (context == null)
@@ -15,7 +15,7 @@ namespace Lemoncode.Books.WebApi.Binders
 
             if (context.Metadata.ModelType == typeof(Book))
             {
-                return new BinderTypeModelBinder(typeof(BookBinder));
+                return new BinderTypeModelBinder(typeof(BookModelBinder));
             }
 
             return null;

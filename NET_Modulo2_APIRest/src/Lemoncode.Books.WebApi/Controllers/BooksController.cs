@@ -43,7 +43,7 @@ namespace Lemoncode.Books.WebApi.Controllers
         //    var id = _booksService.CreateBook(newBook);
         //    return CreatedAtAction(nameof(GetBook), new { id }, newBook);
         //}
-        public IActionResult Post([ModelBinder(typeof(BookBinder), Name = "authorid")] Book newBook)
+        public IActionResult Post([ModelBinder(typeof(BookModelBinder), Name = "authorid"), FromBody] Book newBook)
         {
             var id = _booksService.CreateBook(newBook);
             return CreatedAtAction(nameof(GetBook), new { id }, newBook);
