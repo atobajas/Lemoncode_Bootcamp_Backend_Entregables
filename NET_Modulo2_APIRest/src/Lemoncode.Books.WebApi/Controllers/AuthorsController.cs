@@ -44,7 +44,7 @@ namespace Lemoncode.Books.WebApi.Controllers
 
         // PUT api/<AuthorsController>/5
         [HttpPut("{id}")]
-        public IActionResult Patch(int id, [FromBody] AuthorDto newAuthor)
+        public IActionResult Put(int id, [FromBody] UpdateAuthorDto newAuthor)
         {
             _authorsService.ModifyAuthor(id, newAuthor);
             return Ok();

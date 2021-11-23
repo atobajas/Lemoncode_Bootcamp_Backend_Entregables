@@ -43,22 +43,19 @@ namespace Lemoncode.Books.Application.Services
             return bookDtos;
         }
 
-        public void CreateBook(BookDto bookDto)
+        public void CreateBook(BookDto newBookDto)
         {
-            var newBookEntity = new BookEntity()
+            if (!IsValidAuthor(newBookDto.AuthorId))
             {
-                Title = bookDto.Title,
-                Description = bookDto.Description,
-                PublishedOn = DateTime.TryParse(bookDto.PublishedOn.ToString(), out DateTime temp)
-                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
-                    : null,
-                AuthorId = bookDto.AuthorId                  
-            };
+                throw new KeyNotFoundException($"No existe el autor {newBookDto.AuthorId}");
+            }
+
+            var newBookEntity = MapBookDtoToBookEntity(newBookDto);
 
             _booksDbContext.Books.Add(newBookEntity);
             _booksDbContext.SaveChanges();
 
-            bookDto.Id = newBookEntity.Id;
+            newBookDto.Id = newBookEntity.Id;
         }
 
         public void ModifyBook(int id, BookDto newBookDto)
@@ -80,6 +77,7 @@ namespace Lemoncode.Books.Application.Services
                                     ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
                                     : null;
             newBookEntity.AuthorId = newBookDto.AuthorId;
+
             _booksDbContext.SaveChanges();
         }
 
@@ -108,7 +106,9 @@ namespace Lemoncode.Books.Application.Services
                 Id = bookEntity.Id,
                 Title = bookEntity.Title,
                 Description = bookEntity.Description,
-                PublishedOn = bookEntity.PublishedOn,
+                PublishedOn = DateTime.TryParse(bookEntity.PublishedOn.ToString(), out DateTime temp)
+                                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+                                    : null,
                 AuthorId = bookEntity.AuthorId
             };
             return bookDto;
@@ -121,7 +121,9 @@ namespace Lemoncode.Books.Application.Services
                 Id = bookDto.Id,
                 Title = bookDto.Title,
                 Description = bookDto.Description,
-                PublishedOn = bookDto.PublishedOn,
+                PublishedOn = DateTime.TryParse(bookDto.PublishedOn.ToString(), out DateTime temp)
+                                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+                                    : null,
                 AuthorId = bookDto.AuthorId,
             };
             return bookEntity;

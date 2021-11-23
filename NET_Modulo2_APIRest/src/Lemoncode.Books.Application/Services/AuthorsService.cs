@@ -52,9 +52,8 @@ namespace Lemoncode.Books.Application.Services
             newAuthorDto.Id = newAuthorEntity.Id;
         }
 
-        public void ModifyAuthor(int id, AuthorDto newAuthorDto)
+        public void ModifyAuthor(int id, UpdateAuthorDto newAuthorDto)
         {
-
             var authorEntity = _booksDbContext
                 .Authors
                 .SingleOrDefault(x => x.Id == id);
@@ -62,7 +61,14 @@ namespace Lemoncode.Books.Application.Services
             {
                 throw new KeyNotFoundException($"El autor {id} no existe.");
             }
-            authorEntity = MapAuthorDtoToAuthorEntity(newAuthorDto);
+
+            authorEntity.Name = newAuthorDto.Name;
+            authorEntity.LastName = newAuthorDto.LastName;
+            authorEntity.Birth = DateTime.TryParse(newAuthorDto.Birth.ToString(), out DateTime temp)
+                    ? new DateTime(temp.Year, temp.Month, temp.Day, 0, 0, 0)
+                    : null;
+            authorEntity.CountryCode = newAuthorDto.CountryCode;
+
             _booksDbContext.SaveChanges();
         }
 
@@ -77,8 +83,11 @@ namespace Lemoncode.Books.Application.Services
                 throw new KeyNotFoundException($"El autor {id} no existe.");
             }
 
-            _booksDbContext.Authors.Remove(authorEntity);
-            _booksDbContext.SaveChanges();
+            //if (authorEntity.Books.Count != 0)
+            //{
+                _booksDbContext.Authors.Remove(authorEntity);
+                _booksDbContext.SaveChanges();
+            //}
         }
 
         private AuthorDto MapAuthorEntityToAuthorDto(AuthorEntity authorEntity)
