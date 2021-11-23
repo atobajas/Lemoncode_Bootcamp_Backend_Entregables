@@ -1,4 +1,5 @@
 ﻿using Lemoncode.Books.Application.Models;
+using Lemoncode.Books.Application.Models.Filters;
 using Lemoncode.Books.Application.Services;
 using Lemoncode.Books.WebApi.Binders;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +19,12 @@ namespace Lemoncode.Books.WebApi.Controllers
         }
 
         // GET: api/<BooksController>
+        /// <param name="title" example="api/books? title = foo & author = bar">Filters</param>
+        /// <param name="author" example="api/books? title = foo & author = bar">Filters</param>
         [HttpGet]
-        public IActionResult GetBooks()
+        public IActionResult GetBooks([FromQuery] BooksFilter booksFilter)
         {
-            var books = _booksService.GetBooks();
+            var books = _booksService.GetBooks(booksFilter);
             return Ok(books);
         }
 
@@ -37,10 +40,10 @@ namespace Lemoncode.Books.WebApi.Controllers
 
         // POST api/<BooksController>
         [HttpPost]
-        public IActionResult Post([FromBody] BookDto newBook)
+        public IActionResult CreateBook([FromBody] BookDto newBook)
         {
             _booksService.CreateBook(newBook);
-            return CreatedAtAction(nameof(GetBook), new { newBook.Id }, newBook);
+            return CreatedAtAction(nameof(GetBook), new { id = newBook.Id }, newBook);
         }
         // Usando ModelBinder específico
         //public IActionResult Post([ModelBinder(typeof(BookModelBinder), Name = "authorid"), FromBody] BookDto newBook)
@@ -51,15 +54,19 @@ namespace Lemoncode.Books.WebApi.Controllers
 
         // PUT api/<BooksController>/5
         [HttpPut("{id:int}")]
-        public IActionResult Put(int id, [FromBody] BookDto newBook)
+        public IActionResult ModifyBook(int id, [FromBody] UpdateBookDto newBook)
         {
-            _booksService.ModifyBook(id, newBook);
+            if (id != newBook.Id)
+            {
+                return BadRequest("Id no coincide");
+            }
+            _booksService.ModifyBook(newBook);
             return Ok();
         }
 
         // DELETE api/<BooksController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult RemoveBook(int id)
         {
             _booksService.RemoveBook(id);
             return Ok();
