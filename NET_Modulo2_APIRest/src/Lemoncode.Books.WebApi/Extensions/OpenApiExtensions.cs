@@ -31,6 +31,33 @@ namespace Lemoncode.Books.WebApi.Extensions
                 //c.IncludeXmlComments(xmlCommentsWebApi);
                 //var xmlCommentsApplication = Path.Combine(System.AppContext.BaseDirectory, $"{applicationAssemblyName}.xml");
                 //c.IncludeXmlComments(xmlCommentsApplication);
+
+                c.AddSecurityDefinition(
+                    "basic",
+                    new OpenApiSecurityScheme
+                    {
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "basic",
+                        In = ParameterLocation.Header,
+                        Description = "Basic Authorization header"
+                    });
+
+                c.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement()
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference()
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "basic"
+                                }
+                            },
+                            new string[]{}
+                        }
+                    });
             });
 
             return services;

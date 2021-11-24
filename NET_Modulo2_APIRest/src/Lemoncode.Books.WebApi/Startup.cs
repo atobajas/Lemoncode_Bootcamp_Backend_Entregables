@@ -1,5 +1,6 @@
 using Lemoncode.Books.Application;
 using Lemoncode.Books.WebApi.Extensions;
+using Lemoncode.Books.WebApi.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -45,15 +46,16 @@ namespace Lemoncode.Books.WebApi
             }
 
             app.UseOpenApi();
+            app.UseMiddleware<BasicAuthMiddleware>();
             app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-            });
+            //app.UseAuthorization();
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapGet("/", async context =>
+            //    {
+            //        await context.Response.WriteAsync("Hello World!");
+            //    });
+            //});
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
