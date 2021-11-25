@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lemoncode.Books.Application.Services
 {
@@ -15,7 +16,7 @@ namespace Lemoncode.Books.Application.Services
             _booksDbContext = booksDBContext;
         }
 
-        public AuthorDto GetAuthor(int id)
+        public async Task<AuthorDto> GetAuthor(int id)
         {
             var authorEntity =
                 _booksDbContext
@@ -31,7 +32,7 @@ namespace Lemoncode.Books.Application.Services
             return MapAuthorEntityToAuthorDto(authorEntity);
         }
 
-        public IEnumerable<AuthorDto> GetAuthors()
+        public async Task<IEnumerable<AuthorDto>> GetAuthors()
         {
             var authorEntities =
                 _booksDbContext
@@ -42,7 +43,7 @@ namespace Lemoncode.Books.Application.Services
             return authorsDtos;
         }
 
-        public void CreateAuthor(AuthorDto newAuthorDto)
+        public async Task CreateAuthor(AuthorDto newAuthorDto)
         {
             var newAuthorEntity = MapAuthorDtoToAuthorEntity(newAuthorDto);
 
@@ -52,7 +53,7 @@ namespace Lemoncode.Books.Application.Services
             newAuthorDto.Id = newAuthorEntity.Id;
         }
 
-        public void ModifyAuthor(int id, UpdateAuthorDto newAuthorDto)
+        public async Task ModifyAuthor(int id, UpdateAuthorDto newAuthorDto)
         {
             var authorEntity = _booksDbContext
                 .Authors
@@ -72,7 +73,7 @@ namespace Lemoncode.Books.Application.Services
             _booksDbContext.SaveChanges();
         }
 
-        public void RemoveAuthor(int id)
+        public async Task RemoveAuthor(int id)
         {
             var authorEntity = _booksDbContext.Authors
                 .Where(x => x.Id == id)

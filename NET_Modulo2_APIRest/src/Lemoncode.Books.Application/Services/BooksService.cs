@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Lemoncode.Books.Application.Services
 {
@@ -16,7 +17,7 @@ namespace Lemoncode.Books.Application.Services
             _booksDbContext = booksDBContext;
         }
 
-        public BookInfo GetBook(int id)
+        public async Task<BookInfo> GetBook(int id)
         {
             var bookEntity =
                 _booksDbContext
@@ -32,7 +33,7 @@ namespace Lemoncode.Books.Application.Services
             return bookDto;
         }
 
-        public IEnumerable<BookInfo> GetBooks(BooksFilter booksFilter)
+        public async Task<IEnumerable<BookInfo>> GetBooks(BooksFilter booksFilter)
         {
             var booksQueryable = _booksDbContext
                 .Books
@@ -61,7 +62,7 @@ namespace Lemoncode.Books.Application.Services
             return bookDtos;
         }
 
-        public void CreateBook(BookDto newBookDto)
+        public async Task CreateBook(BookDto newBookDto)
         {
             if (!IsValidAuthor(newBookDto.AuthorId))
             {
@@ -76,7 +77,7 @@ namespace Lemoncode.Books.Application.Services
             newBookDto.Id = newBookEntity.Id;
         }
 
-        public void ModifyBook(UpdateBookDto newBookDto)
+        public async Task ModifyBook(UpdateBookDto newBookDto)
         {
             //if (!IsValidAuthor(newBookDto.AuthorId))
             //{
@@ -102,7 +103,7 @@ namespace Lemoncode.Books.Application.Services
             _booksDbContext.SaveChanges();
         }
 
-        public void RemoveBook(int id)
+        public async Task RemoveBook(int id)
         {
             var bookEntity = _booksDbContext.Books.SingleOrDefault(x => x.Id == id);
             if (bookEntity is null)

@@ -1,7 +1,7 @@
 ﻿using Lemoncode.Books.Application.Models;
 using Lemoncode.Books.Application.Services;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Threading.Tasks;
 
 namespace Lemoncode.Books.WebApi.Controllers
 {    
@@ -18,9 +18,9 @@ namespace Lemoncode.Books.WebApi.Controllers
 
         // GET: api/<AuthorsController>
         [HttpGet]
-        public IActionResult GetAuthors()
+        public async Task<IActionResult> GetAuthors()
         {
-            var authors = _authorsService.GetAuthors();
+            var authors = await _authorsService.GetAuthors();
             return Ok(authors);
         }
 
@@ -28,33 +28,33 @@ namespace Lemoncode.Books.WebApi.Controllers
         /// <param name="id" example="5">The author id</param>
         /// <param name="isDetailed" example="true">Flag that indicates whether the report is detailed or not</param>
         [HttpGet("{id:int}")]
-        public IActionResult GetAuthor(int id, [FromQuery] bool isDetailed = false)
+        public async Task<IActionResult> GetAuthor(int id, [FromQuery] bool isDetailed = false)
         {
-            var author = _authorsService.GetAuthor(id);
+            var author = await _authorsService.GetAuthor(id);
             return Ok(author);
         }
 
         // POST api/<AuthorsController>
         [HttpPost]
-        public IActionResult CreateAuthor([FromBody] AuthorDto newAuthor)
+        public async Task<IActionResult> CreateAuthor([FromBody] AuthorDto newAuthor)
         {
-            _authorsService.CreateAuthor(newAuthor);
+            await _authorsService.CreateAuthor(newAuthor);
             return CreatedAtAction(nameof(GetAuthor), new { newAuthor.Id }, newAuthor);
         }
 
         // PUT api/<AuthorsController>/5
         [HttpPut("{id}")]
-        public IActionResult ModifyAuthor(int id, [FromBody] UpdateAuthorDto newAuthor)
+        public async Task<IActionResult> ModifyAuthor(int id, [FromBody] UpdateAuthorDto newAuthor)
         {
-            _authorsService.ModifyAuthor(id, newAuthor);
+            await _authorsService.ModifyAuthor(id, newAuthor);
             return Ok();
         }
 
         // DELETE api/<AuthorsController>/5
         [HttpDelete("{id}")]
-        public IActionResult RemoveAuthor(int id)
+        public async Task<IActionResult> RemoveAuthor(int id)
         {
-            _authorsService.RemoveAuthor(id);
+            await _authorsService.RemoveAuthor(id);
             return Ok();
         }
     }
