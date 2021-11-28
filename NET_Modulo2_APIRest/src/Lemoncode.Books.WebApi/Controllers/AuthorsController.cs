@@ -17,6 +17,15 @@ namespace Lemoncode.Books.WebApi.Controllers
         }
 
         // GET: api/<AuthorsController>
+        /// <summary>
+        ///     GET ALL Authors
+        /// </summary>
+        /// <remarks>
+        ///     Remarks
+        /// </remarks>
+        /// <returns>
+        ///     IActionResult with IEnumerable of AuthorDto
+        /// </returns>
         [HttpGet]
         public async Task<IActionResult> GetAuthors()
         {
@@ -35,6 +44,14 @@ namespace Lemoncode.Books.WebApi.Controllers
         }
 
         // POST api/<AuthorsController>
+        /// <summary>
+        ///     Create new Author
+        /// </summary>
+        /// <remarks>
+        ///     Sample value
+        /// </remarks>
+        /// <param name="newAuthor">New AuthorDto</param>
+        /// <returns>IActionResult with new AuthorDto</returns>
         [HttpPost]
         public async Task<IActionResult> CreateAuthor([FromBody] AuthorDto newAuthor)
         {

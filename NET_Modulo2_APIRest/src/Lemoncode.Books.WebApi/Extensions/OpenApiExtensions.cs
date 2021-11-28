@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Lemoncode.Books.Application.Models.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -9,9 +10,8 @@ namespace Lemoncode.Books.WebApi.Extensions
     {        
         public static IServiceCollection AddOpenApi(this IServiceCollection services)
         {
-            //var mainAssemblyName = typeof(Startup).Assembly.GetName().Name;
-            //var applicationAssemblyName = typeof(NewGame).Assembly.GetName().Name;
-
+            var mainAssemblyName = typeof(Startup).Assembly.GetName().Name;
+            var applicationAssemblyName = typeof(BooksFilter).Assembly.GetName().Name;
 
             services.AddSwaggerGen(c =>
             {
@@ -27,10 +27,10 @@ namespace Lemoncode.Books.WebApi.Extensions
                     }
                 });
 
-                //var xmlCommentsWebApi = Path.Combine(System.AppContext.BaseDirectory, $"{mainAssemblyName}.xml");
-                //c.IncludeXmlComments(xmlCommentsWebApi);
-                //var xmlCommentsApplication = Path.Combine(System.AppContext.BaseDirectory, $"{applicationAssemblyName}.xml");
-                //c.IncludeXmlComments(xmlCommentsApplication);
+                var xmlCommentsWebApi = Path.Combine(System.AppContext.BaseDirectory, $"{mainAssemblyName}.xml");
+                c.IncludeXmlComments(xmlCommentsWebApi);
+                var xmlCommentsApplication = Path.Combine(System.AppContext.BaseDirectory, $"{applicationAssemblyName}.xml");
+                c.IncludeXmlComments(xmlCommentsApplication);
 
                 c.AddSecurityDefinition(
                     "basic",

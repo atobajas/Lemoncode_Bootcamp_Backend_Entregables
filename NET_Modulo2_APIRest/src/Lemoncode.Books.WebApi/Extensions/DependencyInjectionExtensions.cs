@@ -1,4 +1,4 @@
-﻿using Lemoncode.Books.Application;
+﻿using Lemoncode.Books.Application.Services.Abstractions;
 using Lemoncode.Books.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 

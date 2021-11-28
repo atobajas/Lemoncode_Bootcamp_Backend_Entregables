@@ -13,7 +13,6 @@ namespace Lemoncode.Books.WebApi
 {
     public class Startup
     {
-
         private readonly IConfiguration _configuration;
 
         public Startup(IConfiguration configuration)
@@ -21,23 +20,29 @@ namespace Lemoncode.Books.WebApi
             _configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime.
+        // Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var booksConnectionString = _configuration.GetValue<string>("ConnectionStrings:BooksDatabase");
-            services.AddDbContext<BooksDbContext>(options => 
-                    options.UseSqlServer(booksConnectionString));
+            
+            //Swagger
+            services.AddOpenApi();
 
-            // aquí los registros de servicios en el contenedor de inyección de dependencia. Por ejemplo para Entity Framework
+            // registra los servicios absolutamente necesarios para que funcionen los controladores, y nada relativo a vistas o páginas Razor.
+            // Esto incluye los servicios de autorización, soporte para formateadores, CORS, anotaciones de datos,
+            // el application model, mecanismos de selección de acciones, servicios de binding, etc.
             services.AddControllers();
 
-            services
-                .AddOpenApi()
-                .AddBooksDependencies();
+            var booksConnectionString = _configuration.GetValue<string>("ConnectionStrings:BooksDatabase");
+            services.AddDbContext<BooksDbContext>(options => options.UseSqlServer(booksConnectionString));
+
+            // aquí los registros de servicios en el contenedor de inyección de dependencia. Por ejemplo para Entity Framework
+            services.AddBooksDependencies();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline (middlewares).
+        // This method gets called by the runtime.
+        // Use this method to configure the HTTP request pipeline (middlewares).
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -48,7 +53,7 @@ namespace Lemoncode.Books.WebApi
             app.UseOpenApi();
             app.UseMiddleware<BasicAuthMiddleware>();
             app.UseRouting();
-            //app.UseAuthorization();
+            app.UseAuthorization();
             //app.UseEndpoints(endpoints =>
             //{
             //    endpoints.MapGet("/", async context =>

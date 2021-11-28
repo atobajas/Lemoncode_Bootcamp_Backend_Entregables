@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lemoncode.Books.Application.Services
+namespace Lemoncode.Books.Application.Services.Abstractions
 {
     public interface IDateTimeService
     {

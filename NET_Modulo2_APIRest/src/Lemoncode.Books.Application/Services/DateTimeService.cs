@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lemoncode.Books.Application.Services.Abstractions;
+using System;
 
 namespace Lemoncode.Books.Application.Services
 {
