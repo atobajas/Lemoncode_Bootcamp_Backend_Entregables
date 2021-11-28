@@ -51,7 +51,12 @@ namespace Lemoncode.Books.WebApi
             }
 
             app.UseOpenApi();
-            app.UseMiddleware<BasicAuthMiddleware>();
+            var authenticationActive = _configuration.GetValue<string>("BasicAuthentication:Active");
+            if (authenticationActive == "true")
+            {
+                app.UseMiddleware<BasicAuthMiddleware>();
+            }
+            
             app.UseRouting();
             app.UseAuthorization();
             //app.UseEndpoints(endpoints =>
