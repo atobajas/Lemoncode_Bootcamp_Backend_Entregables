@@ -2,8 +2,9 @@
 
 namespace Lemoncode.Books.Application.Services.Abstractions
 {
-    public interface IDateTimeService
+    public interface IDateTimeFactory
     {
-        DateTime GetUtcNow();
+        DateTime? GetUtcNow();
     }
 }
+ 

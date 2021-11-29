@@ -3,9 +3,9 @@ using System;
 
 namespace Lemoncode.Books.Application.Services
 {
-    public class DateTimeService : IDateTimeService
+    public class DateTimeService : IDateTimeFactory
     {
-        public DateTime GetUtcNow()
+        public DateTime? GetUtcNow()
         {
             return DateTime.UtcNow;
         }

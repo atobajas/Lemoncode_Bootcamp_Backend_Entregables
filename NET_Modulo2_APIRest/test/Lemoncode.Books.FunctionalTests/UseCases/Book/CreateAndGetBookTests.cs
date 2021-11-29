@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Xunit;
 using Lemoncode.Books.FunctionalTests.TestSupport;
 using System.Collections.Generic;
+using Moq;
+using Lemoncode.Books.Application.Services.Abstractions;
 
 namespace Lemoncode.Books.FunctionalTests.UseCases.Book
 {
@@ -26,12 +28,18 @@ namespace Lemoncode.Books.FunctionalTests.UseCases.Book
 
             protected override async Task Given()
             {
+                var mockDateTimeFactory = new Mock<IDateTimeFactory>();
+                var mockedDate = new DateTime(2021, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                mockDateTimeFactory
+                    .Setup(x => x.GetUtcNow())
+                    .Returns(mockedDate);
+
                 _newAuthor =
                     new AuthorDto
                     {
                         Name = "foo",
                         LastName = "bar",
-                        Birth = new DateTime(2021, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                        Birth = mockDateTimeFactory.Object.GetUtcNow(),
                         CountryCode = "ES"
                     };
 

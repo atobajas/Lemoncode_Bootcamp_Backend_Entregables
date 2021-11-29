@@ -8,7 +8,7 @@ namespace Lemoncode.Books.WebApi.Extensions
     {
         public static IServiceCollection AddBooksDependencies(this IServiceCollection services)
         {
-            services.AddSingleton<IDateTimeService, DateTimeService>();
+            services.AddSingleton<IDateTimeFactory, DateTimeService>();
             services.AddTransient<AuthorsService>();
             services.AddTransient<BooksService>();
 
