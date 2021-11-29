@@ -22,7 +22,7 @@ namespace Lemoncode.Books.FunctionalTests.UseCases.Book
             private HttpResponseMessage _result;
             private string _authorId;
             private AuthorDto _newAuthor;
-            private IEnumerable<BookDto> _expectedBooks;
+            private IEnumerable<BookInfo> _expectedBooks;
 
             protected override async Task Given()
             {
@@ -48,8 +48,9 @@ namespace Lemoncode.Books.FunctionalTests.UseCases.Book
                     {
                         Title = "title one",
                         Description = "description one",
-                        AuthorId = authorId,
-                        PublishedOn = null
+                        PublishedOn = null,
+                        AuthorId = authorId
+                        
                     };
 
                 var responseBookOne = await HttpClientAuthorized.PostAsJsonAsync("api/books", newBookOne);
@@ -65,8 +66,8 @@ namespace Lemoncode.Books.FunctionalTests.UseCases.Book
                     {
                         Title = "title two",
                         Description = "description two",
-                        AuthorId = authorId,
-                        PublishedOn = null
+                        PublishedOn = null,
+                        AuthorId = authorId
                     };
 
                 var responseBookTwo = await HttpClientAuthorized.PostAsJsonAsync("api/books", newBookTwo);
@@ -78,21 +79,23 @@ namespace Lemoncode.Books.FunctionalTests.UseCases.Book
                 var bookTwoId = int.Parse(bookTwoIdAsText!);
 
                 _expectedBooks =
-                    new List<BookDto>
+                    new List<BookInfo>
                     {
                         new()
                         {
                             Id = bookOneId,
                             Title = newBookOne.Title,
                             Description = newBookOne.Description,
-                            PublishedOn = newBookOne.PublishedOn
+                            PublishedOn = newBookOne.PublishedOn,
+                            Author = $"{_newAuthor.Name} {_newAuthor.LastName}"
                         },
                         new()
                         {
                             Id = bookTwoId,
                             Title = newBookTwo.Title,
                             Description = newBookTwo.Description,
-                            PublishedOn = newBookTwo.PublishedOn
+                            PublishedOn = newBookTwo.PublishedOn,
+                            Author = $"{_newAuthor.Name} {_newAuthor.LastName}"
                         }
                     };
             }
@@ -112,8 +115,8 @@ namespace Lemoncode.Books.FunctionalTests.UseCases.Book
             public async Task Then_It_Should_Return_The_Expected_Author()
             {
                 var json = await _result.Content.ReadAsStringAsync();
-                var authorInfo = JsonSerializer.Deserialize<AuthorDto>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-                authorInfo.Books.Should().BeEquivalentTo(_expectedBooks);
+                var booksInfo = JsonSerializer.Deserialize<IEnumerable<BookInfo>>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+                booksInfo.Should().BeEquivalentTo(_expectedBooks);
             }
         }
     }
