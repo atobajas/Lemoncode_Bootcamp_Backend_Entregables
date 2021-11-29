@@ -16,10 +16,10 @@ namespace Lemoncode.Books.FunctionalTests.UseCases
     {
         public class Given_An_Author_When_Getting_Author
             : FunctionalTest
-        {
-            private AuthorDto _newAuthor;
+        {            
             private HttpResponseMessage _result;
             private string _authorId;
+            private AuthorDto _newAuthor;
             private AuthorDto _expectedAuthorInfo;
 
             protected override async Task Given()

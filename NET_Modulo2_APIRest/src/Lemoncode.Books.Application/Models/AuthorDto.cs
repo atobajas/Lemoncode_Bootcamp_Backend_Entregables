@@ -7,7 +7,6 @@ namespace Lemoncode.Books.Application.Models
 {
     public class AuthorDto
     {
-        [JsonIgnore]
         public int Id { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
