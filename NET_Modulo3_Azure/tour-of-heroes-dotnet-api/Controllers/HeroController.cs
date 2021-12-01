@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -103,6 +105,70 @@ namespace tour_of_heroes_api.Controllers
         private bool HeroExists(int id)
         {
             return _context.Heroes.Any(e => e.Id == id);
+        }
+
+        // GET: api/hero/alteregopic/5
+        [HttpGet("alteregopic/{id}")]
+        public async Task<ActionResult<Hero>> GetAlterEgoPic(int id)
+        {
+            var hero = await _context.Heroes.FirstOrDefaultAsync(h => h.Id == id);
+
+            if (hero == null)
+            {
+                return NotFound();
+            }
+
+            //Get image from Azure Storage
+            string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+
+            // Create a BlobServiceClient object which will be used to create a container client
+            var blobServiceClient = new BlobServiceClient(connectionString);
+
+            //Get container client
+            var containerClient = blobServiceClient.GetBlobContainerClient("alteregos");
+
+            //Get blob client
+            var blob = containerClient.GetBlobClient($"{hero.AlterEgo.ToLower().Replace(' ', '-')}.png");
+
+            //Get image from blob
+            var image = await blob.DownloadStreamingAsync();
+
+            //return image
+            return File(image.Value.Content, "image/png");
+        }
+
+        // GET: api/hero/alteregopic/sas
+        [HttpGet("alteregopic/sas/{imgName}")]
+        public ActionResult GetAlterEgoPicSas(string imgName)
+        {
+            //Get image from Azure Storage
+            string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+
+            // Create a BlobServiceClient object which will be used to create a container client
+            var blobServiceClient = new BlobServiceClient(connectionString);
+
+            //Get container client
+            var containerClient = blobServiceClient.GetBlobContainerClient("alteregos");
+
+            //Get blob client
+            var blobClient = containerClient.GetBlobClient(imgName);
+
+            var sasBuilder = new BlobSasBuilder()
+            {
+                BlobContainerName = "alteregos",
+                BlobName = imgName,
+                Resource = "b"
+            };
+
+            sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(3);
+            sasBuilder.SetPermissions(BlobSasPermissions.Read | BlobSasPermissions.Write);
+
+            Uri sasUri = blobClient.GenerateSasUri(sasBuilder);
+
+            Console.WriteLine($"SAS Uri for blob is: {sasUri}");
+
+            //return image
+            return Ok($"{blobServiceClient.Uri}{sasUri.Query.ToString()}");
         }
     }
 }
