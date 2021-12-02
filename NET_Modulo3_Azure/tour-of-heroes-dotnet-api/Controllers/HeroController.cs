@@ -100,7 +100,7 @@ namespace tour_of_heroes_api.Controllers
 
             try
             {
-                /*********** Background processs (We have to rename the image) *************/
+                /*********** Background processs (We have to delete the hero and alterego images) *************/
                 // Get the connection string from app settings
                 string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
 
