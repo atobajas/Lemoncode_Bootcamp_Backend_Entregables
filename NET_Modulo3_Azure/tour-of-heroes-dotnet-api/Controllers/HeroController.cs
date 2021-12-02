@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using Azure.Storage.Queues;
 using Azure.Storage.Sas;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -96,6 +98,42 @@ namespace tour_of_heroes_api.Controllers
                 return NotFound();
             }
 
+            try
+            {
+                /*********** Background processs (We have to rename the image) *************/
+                // Get the connection string from app settings
+                string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+
+                // Instantiate a QueueClient which will be used to create and manipulate the queue
+                var queueClient = new QueueClient(connectionString, "picsToDelete");
+
+                // Create a queue
+                await queueClient.CreateIfNotExistsAsync();
+
+                // Create a dynamic object to hold the message
+                var message = new
+                {
+                    heroName = hero.Name,
+                    alterEgoName = hero.AlterEgo
+                };
+
+                // Send the message
+                await queueClient.SendMessageAsync(JsonSerializer.Serialize(message).ToString());
+
+                /*********** End Background processs *************/
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!HeroExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
             _context.Heroes.Remove(hero);
             await _context.SaveChangesAsync();
 
@@ -148,7 +186,7 @@ namespace tour_of_heroes_api.Controllers
             var blobServiceClient = new BlobServiceClient(connectionString);
 
             //Get container client
-            var containerClient = blobServiceClient.GetBlobContainerClient("alteregos");
+            var containerClient = blobServiceClient.GetBlobContainerClient("picsToDelete");
 
             //Get blob client
             var blobClient = containerClient.GetBlobClient(imgName);
