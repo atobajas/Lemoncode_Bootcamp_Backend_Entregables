@@ -13,18 +13,18 @@
         <!-- Box -->
         <section class="box feature">
           <!-- Ruta directorio local -->
-          <a routerLink="/detail/{{ hero.id }}" class="image featured"
+          <!-- <a routerLink="/detail/{{ hero.id }}" class="image featured"
             ><img
               src="assets/alteregos/{{
                 hero.alterEgo | lowercase | replace: ' ':'-'
               }}.png"
               alt=""
-          /></a>
+          /></a> -->
 
           <!-- Llamada a API -->
-          <!-- <a routerLink="/detail/{{ hero.id }}" class="image featured"
+          <a routerLink="/detail/{{ hero.id }}" class="image featured"
             ><img src="{{ alterEgoPic }}" alt=""
-          /></a> -->
+          /></a>
 
           <!-- Ruta Azure Blob -->
           <!-- <a routerLink="/detail/{{hero.id}}" class="image featured"><img src="{{ storageUrl }}/alteregos/{{hero.alterEgo | lowercase | replace: ' ':'-'}}.png" alt="" /></a> -->
