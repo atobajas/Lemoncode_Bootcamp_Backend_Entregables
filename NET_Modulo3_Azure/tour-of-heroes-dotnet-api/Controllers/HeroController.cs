@@ -105,7 +105,7 @@ namespace tour_of_heroes_api.Controllers
                 string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
 
                 // Instantiate a QueueClient which will be used to create and manipulate the queue
-                var queueClient = new QueueClient(connectionString, "picsToDelete");
+                var queueClient = new QueueClient(connectionString, "picstodelete");
 
                 // Create a queue
                 await queueClient.CreateIfNotExistsAsync();

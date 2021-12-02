@@ -6,7 +6,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "AZURE_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=atobajasheroes;AccountKey=54Xu/WhOQ/c+qoZFSuG6T92lRvC61pNNLk/glYCC1bChgYhkVmLRWSEPJP7eJHGsP/riCLsk7BwlarJngHWsCA==;EndpointSuffix=core.windows.net",
+        "AZURE_STORAGE_CONNECTION_STRING": "UseDevelopmentStorage=true",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": "true",
