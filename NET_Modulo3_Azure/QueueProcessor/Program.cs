@@ -1,14 +1,14 @@
-﻿using Azure.Storage.Blobs;
+﻿using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using System;
 using System.Text.Json;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace QueueProcessor
 {
-    class Task
+    class Message
     {
         public string heroName { get; set; }
         public string alterEgoName { get; set; }
@@ -22,14 +22,14 @@ namespace QueueProcessor
         // Get Blob Container
         static BlobContainerClient container = blobClient.GetBlobContainerClient("heroes");
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Hello Queue Processor!");
 
-            GetQueueMessages();
+            await GetQueueMessages();
         }
 
-        private static async System.Threading.Tasks.Task GetQueueMessages()
+        private static async Task GetQueueMessages()
         {
             try
             {
@@ -44,13 +44,13 @@ namespace QueueProcessor
 
                 while (true)
                 {
-                    // Message in queue is invisible for all processors.
+                    // Message in queue is invisible for rest of processors.
                     QueueMessage message = await queueClient.ReceiveMessageAsync();
                     if (message != null)
                     {
                         Console.WriteLine($"Processing queue message {message.Body}");
 
-                        var heroe = JsonSerializer.Deserialize<Task>(message.Body);
+                        var heroe = JsonSerializer.Deserialize<Message>(message.Body);
 
                         Console.WriteLine($"Delete image for {heroe.heroName} and {heroe.alterEgoName}");
 
