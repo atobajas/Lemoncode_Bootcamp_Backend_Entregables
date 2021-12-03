@@ -3,6 +3,7 @@ using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using System;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QueueProcessor
@@ -21,13 +22,17 @@ namespace QueueProcessor
         // Get Blob Container
         static BlobContainerClient container = blobClient.GetBlobContainerClient("heroes");
 
-        static async void Main(string[] args)
+        static void Main(string[] args)
         {
             Console.WriteLine("Hello Queue Processor!");
 
+            GetQueueMessages();
+        }
+
+        private static async System.Threading.Tasks.Task GetQueueMessages()
+        {
             try
             {
-                /*********** Background processs (We have to delete the hero and alterego images) *************/
                 // Get the connection string from app settings
                 string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
 
@@ -39,6 +44,7 @@ namespace QueueProcessor
 
                 while (true)
                 {
+                    // Message in queue is invisible for all processors.
                     QueueMessage message = await queueClient.ReceiveMessageAsync();
                     if (message != null)
                     {
@@ -49,38 +55,38 @@ namespace QueueProcessor
                         Console.WriteLine($"Delete image for {heroe.heroName} and {heroe.alterEgoName}");
 
                         // Delete Hero imagen
-                        var fileName = $"{heroe.heroName.Replace(' ', '-').ToLower()}.jpeg";
-                        await DeleteFileToAzureContainer(fileName, heroe.heroName);
+                        await DeleteFileToAzureContainer(heroe.heroName, heroe.heroName);
 
                         // Delete Alterego imagen
-                        fileName = $"{heroe.alterEgoName.Replace(' ', '-').ToLower()}.jpeg";
-                        await DeleteFileToAzureContainer(fileName, heroe.alterEgoName);
-                    };
+                        await DeleteFileToAzureContainer(heroe.alterEgoName, heroe.alterEgoName);
+
+                        // Delete message from queue
+                        await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Waiting 5 seconds");
+                        Thread.Sleep(5000);
+                    }
                 }
-                /*********** End Background processs *************/
             }
             catch (Exception e)
             {
-                //if (!HeroExists(id))
-                //{
-                //    return NotFound();
-                //}
-                //else
-                //{
-                //    throw;
-                //}
-                throw;
+                Console.WriteLine(e.Message);
+                Console.Read();
             }
         }
 
-        private static async Task<bool> DeleteFileToAzureContainer(string fileName, string heroName)
+        private static async Task<bool> DeleteFileToAzureContainer(string name, string heroName)
         {
-            
-            //TODO use async method.
-            // Get Hero imagen
+            var fileName = $"{name.Replace(' ', '-').ToLower()}.jpeg";
+            if (String.IsNullOrEmpty(fileName)) return false;
+
+            // Get Blob imagen
             var blob = container.GetBlobClient(fileName);
 
-            if (blob.Exists())
+            var exist = await blob.ExistsAsync();
+            if (exist)
             {
                 await blob.DeleteAsync();
                 Console.WriteLine($"Heroe: {heroName} deleted.");
