@@ -20,7 +20,7 @@ namespace QueueProcessor
         static BlobServiceClient blobClient = new BlobServiceClient(Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING"));
 
         // Get Blob Container
-        static BlobContainerClient container = blobClient.GetBlobContainerClient("heroes");
+        static BlobContainerClient containerHeroes = blobClient.GetBlobContainerClient("heroes");
 
         static async Task Main(string[] args)
         {
@@ -55,10 +55,12 @@ namespace QueueProcessor
                         Console.WriteLine($"Delete image for {heroe.heroName} and {heroe.alterEgoName}");
 
                         // Delete Hero imagen
-                        await DeleteFileToAzureContainer(heroe.heroName, heroe.heroName);
+                        var fileName = $"{heroe.heroName.Replace(' ', '-').ToLower()}.jpeg";
+                        await DeleteFileToAzureContainer(fileName, heroe.heroName);
 
                         // Delete Alterego imagen
-                        await DeleteFileToAzureContainer(heroe.alterEgoName, heroe.alterEgoName);
+                        fileName = $"{heroe.alterEgoName.Replace(' ', '-').ToLower()}.png";
+                        await DeleteFileToAzureContainer(fileName, heroe.alterEgoName);
 
                         // Delete message from queue
                         await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
@@ -77,13 +79,12 @@ namespace QueueProcessor
             }
         }
 
-        private static async Task<bool> DeleteFileToAzureContainer(string name, string heroName)
+        private static async Task<bool> DeleteFileToAzureContainer(string fileName, string heroName)
         {
-            var fileName = $"{name.Replace(' ', '-').ToLower()}.jpeg";
             if (String.IsNullOrEmpty(fileName)) return false;
 
             // Get Blob imagen
-            var blob = container.GetBlobClient(fileName);
+            var blob = containerHeroes.GetBlobClient(fileName);
 
             var exist = await blob.ExistsAsync();
             if (exist)
