@@ -1,10 +1,10 @@
-﻿using Azure.Storage.Blobs;
+﻿using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using System;
 using System.Text.Json;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace QueueProcessor
 {
@@ -22,11 +22,11 @@ namespace QueueProcessor
         // Get Blob Container
         static BlobContainerClient container = blobClient.GetBlobContainerClient("heroes");
 
-        static void Main(string[] args)
+        static async System.Threading.Tasks.Task Main(string[] args)
         {
             Console.WriteLine("Hello Queue Processor!");
 
-            GetQueueMessages();
+            await GetQueueMessages();
         }
 
         private static async System.Threading.Tasks.Task GetQueueMessages()
@@ -44,7 +44,7 @@ namespace QueueProcessor
 
                 while (true)
                 {
-                    // Message in queue is invisible for all processors.
+                    // Message in queue is invisible for rest of processors.
                     QueueMessage message = await queueClient.ReceiveMessageAsync();
                     if (message != null)
                     {
