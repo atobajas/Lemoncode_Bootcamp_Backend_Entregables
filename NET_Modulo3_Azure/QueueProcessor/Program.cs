@@ -21,6 +21,7 @@ namespace QueueProcessor
 
         // Get Blob Container
         static BlobContainerClient containerHeroes = blobClient.GetBlobContainerClient("heroes");
+        static BlobContainerClient containerAlteregos = blobClient.GetBlobContainerClient("alteregos");
 
         static async Task Main(string[] args)
         {
@@ -56,11 +57,11 @@ namespace QueueProcessor
 
                         // Delete Hero imagen
                         var fileName = $"{heroe.heroName.Replace(' ', '-').ToLower()}.jpeg";
-                        await DeleteFileToAzureContainer(fileName, heroe.heroName);
+                        await DeleteFileToAzureContainer(fileName, heroe.heroName, containerHeroes);
 
                         // Delete Alterego imagen
                         fileName = $"{heroe.alterEgoName.Replace(' ', '-').ToLower()}.png";
-                        await DeleteFileToAzureContainer(fileName, heroe.alterEgoName);
+                        await DeleteFileToAzureContainer(fileName, heroe.alterEgoName, containerAlteregos);
 
                         // Delete message from queue
                         await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
@@ -79,18 +80,18 @@ namespace QueueProcessor
             }
         }
 
-        private static async Task<bool> DeleteFileToAzureContainer(string fileName, string heroName)
+        private static async Task<bool> DeleteFileToAzureContainer(string fileName, string heroName, BlobContainerClient container)
         {
             if (String.IsNullOrEmpty(fileName)) return false;
 
             // Get Blob imagen
-            var blob = containerHeroes.GetBlobClient(fileName);
+            var blob = container.GetBlobClient(fileName);
 
             var exist = await blob.ExistsAsync();
             if (exist)
             {
                 await blob.DeleteAsync();
-                Console.WriteLine($"Heroe: {heroName} deleted.");
+                Console.WriteLine($"File: {fileName} deleted.");
                 return true;
             }
             Console.WriteLine($"File {fileName} not exist");
