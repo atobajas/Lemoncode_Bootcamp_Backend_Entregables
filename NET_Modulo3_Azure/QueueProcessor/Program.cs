@@ -1,13 +1,14 @@
-﻿using Azure.Storage.Blobs;
+﻿using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using System;
 using System.Text.Json;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace QueueProcessor
 {
-    class Task
+    class Message
     {
         public string heroName { get; set; }
         public string alterEgoName { get; set; }
@@ -19,15 +20,19 @@ namespace QueueProcessor
         static BlobServiceClient blobClient = new BlobServiceClient(Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING"));
 
         // Get Blob Container
-        static BlobContainerClient container = blobClient.GetBlobContainerClient("heroes");
+        static BlobContainerClient containerHeroes = blobClient.GetBlobContainerClient("heroes");
 
-        static async void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Hello Queue Processor!");
 
+            await GetQueueMessages();
+        }
+
+        private static async Task GetQueueMessages()
+        {
             try
             {
-                /*********** Background processs (We have to delete the hero and alterego images) *************/
                 // Get the connection string from app settings
                 string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
 
@@ -39,12 +44,13 @@ namespace QueueProcessor
 
                 while (true)
                 {
+                    // Message in queue is invisible for rest of processors.
                     QueueMessage message = await queueClient.ReceiveMessageAsync();
                     if (message != null)
                     {
                         Console.WriteLine($"Processing queue message {message.Body}");
 
-                        var heroe = JsonSerializer.Deserialize<Task>(message.Body);
+                        var heroe = JsonSerializer.Deserialize<Message>(message.Body);
 
                         Console.WriteLine($"Delete image for {heroe.heroName} and {heroe.alterEgoName}");
 
@@ -53,34 +59,35 @@ namespace QueueProcessor
                         await DeleteFileToAzureContainer(fileName, heroe.heroName);
 
                         // Delete Alterego imagen
-                        fileName = $"{heroe.alterEgoName.Replace(' ', '-').ToLower()}.jpeg";
+                        fileName = $"{heroe.alterEgoName.Replace(' ', '-').ToLower()}.png";
                         await DeleteFileToAzureContainer(fileName, heroe.alterEgoName);
-                    };
+
+                        // Delete message from queue
+                        await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Waiting 5 seconds");
+                        Thread.Sleep(5000);
+                    }
                 }
-                /*********** End Background processs *************/
             }
             catch (Exception e)
             {
-                //if (!HeroExists(id))
-                //{
-                //    return NotFound();
-                //}
-                //else
-                //{
-                //    throw;
-                //}
-                throw;
+                Console.WriteLine(e.Message);
+                Console.Read();
             }
         }
 
         private static async Task<bool> DeleteFileToAzureContainer(string fileName, string heroName)
         {
-            
-            //TODO use async method.
-            // Get Hero imagen
-            var blob = container.GetBlobClient(fileName);
+            if (String.IsNullOrEmpty(fileName)) return false;
 
-            if (blob.Exists())
+            // Get Blob imagen
+            var blob = containerHeroes.GetBlobClient(fileName);
+
+            var exist = await blob.ExistsAsync();
+            if (exist)
             {
                 await blob.DeleteAsync();
                 Console.WriteLine($"Heroe: {heroName} deleted.");
