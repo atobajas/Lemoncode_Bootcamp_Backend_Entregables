@@ -55,13 +55,21 @@ namespace QueueProcessor
 
                         Console.WriteLine($"Delete image for {heroe.heroName} and {heroe.alterEgoName}");
 
+                        var fileName = "";
+
                         // Delete Hero imagen
-                        var fileName = $"{heroe.heroName.Replace(' ', '-').ToLower()}.jpeg";
-                        await DeleteFileToAzureContainer(fileName, heroe.heroName, containerHeroes);
+                        if (String.IsNullOrEmpty(heroe.heroName))
+                        {
+                            fileName = $"{heroe.heroName.Replace(' ', '-').ToLower()}.jpeg";
+                            await DeleteFileToAzureContainer(fileName, heroe.heroName, containerHeroes);
+                        }
 
                         // Delete Alterego imagen
-                        fileName = $"{heroe.alterEgoName.Replace(' ', '-').ToLower()}.png";
-                        await DeleteFileToAzureContainer(fileName, heroe.alterEgoName, containerAlteregos);
+                        if (String.IsNullOrEmpty(heroe.alterEgoName))
+                        {
+                            fileName = $"{heroe.alterEgoName.Replace(' ', '-').ToLower()}.png";
+                            await DeleteFileToAzureContainer(fileName, heroe.alterEgoName, containerAlteregos);
+                        }
 
                         // Delete message from queue
                         await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
