@@ -58,14 +58,14 @@ namespace QueueProcessor
                         var fileName = "";
 
                         // Delete Hero imagen
-                        if (String.IsNullOrEmpty(heroe.heroName))
+                        if (!String.IsNullOrEmpty(heroe.heroName))
                         {
                             fileName = $"{heroe.heroName.Replace(' ', '-').ToLower()}.jpeg";
                             await DeleteFileToAzureContainer(fileName, heroe.heroName, containerHeroes);
                         }
 
                         // Delete Alterego imagen
-                        if (String.IsNullOrEmpty(heroe.alterEgoName))
+                        if (!String.IsNullOrEmpty(heroe.alterEgoName))
                         {
                             fileName = $"{heroe.alterEgoName.Replace(' ', '-').ToLower()}.png";
                             await DeleteFileToAzureContainer(fileName, heroe.alterEgoName, containerAlteregos);
