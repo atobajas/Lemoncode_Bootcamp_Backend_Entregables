@@ -1,1 +1,0 @@
-db.listingsAndReviews.find({"address.country_code": "ES"}, {name: 1, "address.country_code": 1, _id:0})
